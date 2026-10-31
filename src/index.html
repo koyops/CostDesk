@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CostDesk · 保健品采购快速报价</title>
+<style>
+/*__CSS__*/
+</style>
+</head>
+<body>
+<div id="app" class="app-shell">
+  <!-- ============ 左侧固定导航（图标 + 文字，选中项品牌蓝竖条） ============ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <span class="brand-logo brand-cd" aria-label="CostDesk 品牌图标" title="CostDesk · 成本台">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+          <defs>
+            <linearGradient id="cdBg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#2E333B"/><stop offset="1" stop-color="#14161B"/>
+            </linearGradient>
+            <linearGradient id="cdMetal" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#F8FAFC"/><stop offset="0.45" stop-color="#C8D2DE"/><stop offset="1" stop-color="#8A97A8"/>
+            </linearGradient>
+          </defs>
+          <rect x="4" y="4" width="92" height="92" rx="24" fill="url(#cdBg)"/>
+          <rect x="5" y="5" width="90" height="90" rx="23" fill="none" stroke="#434A55" stroke-width="1"/>
+          <g>
+            <rect x="29" y="15" width="42" height="54" rx="11" fill="url(#cdMetal)"/>
+            <rect x="29" y="15" width="42" height="54" rx="11" fill="none" stroke="#F1F5F9" stroke-width="0.8" opacity="0.7"/>
+            <rect x="38" y="24" width="24" height="4" rx="2" fill="#1E2733"/>
+            <rect x="38" y="34" width="24" height="4" rx="2" fill="#1E2733"/>
+            <path d="M38 52 h24 M38 59 h16" stroke="#1E2733" stroke-width="4" stroke-linecap="round" opacity="0.92"/>
+            <circle cx="50" cy="24" r="3" fill="#161B22"/>
+            <rect x="50" y="20" width="10" height="4" rx="2" fill="#fff" opacity="0.55"/>
+          </g>
+          <line x1="18" y1="82" x2="82" y2="82" stroke="#4B5563" stroke-width="2" stroke-linecap="round"/>
+          <g stroke="#5B6472" stroke-width="1.6" stroke-linecap="round">
+            <line x1="28" y1="78.5" x2="28" y2="85.5"/><line x1="36" y1="80" x2="36" y2="84"/>
+            <line x1="44" y1="80" x2="44" y2="84"/><line x1="56" y1="80" x2="56" y2="84"/>
+            <line x1="64" y1="80" x2="64" y2="84"/><line x1="72" y1="78.5" x2="72" y2="85.5"/>
+          </g>
+          <circle cx="50" cy="82" r="3.6" fill="#2563EB" stroke="#93B4F3" stroke-width="0.8"/>
+        </svg>
+      </span>
+      <span class="brand-text"><span class="brand-name">CostDesk</span><span class="brand-sub">成本台 · 采购快速报价</span></span>
+    </div>
+    <nav class="sidebar-nav" id="mainnav">
+      <button class="nav-item active" data-view="calc" title="核算台（Ctrl+Alt+F）"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 11h.01M12 11h.01M16 11h.01M8 15h.01M12 15h.01M16 15h.01M8 19h.01M12 19h.01M16 19h.01"/></svg><span>核算台</span></button>
+      <button class="nav-item" data-view="mats" title="原料价格库"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.5a2 2 0 0 1-.2.9L4.7 20.6a1 1 0 0 0 .9 1.4h12.8a1 1 0 0 0 .9-1.4L14.2 10.4a2 2 0 0 1-.2-.9V2"/><path d="M8.5 2h7M7 16h10"/></svg><span>原料价格库</span></button>
+      <button class="nav-item" data-view="packs" title="包材库"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.3 9 5.1"/><path d="M21 8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="M3.3 7 12 12l8.7-5"/><path d="M12 22V12"/></svg><span>包材库</span></button>
+      <button class="nav-item" data-view="forms" title="配方库"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2-10 5 10 5 10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg><span>配方库</span></button>
+      <button class="nav-item" data-view="quotes" title="报价存档"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg><span>报价存档</span></button>
+      <button class="nav-item" data-view="watch" title="预警看板"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span>预警看板</span></button>
+      <button class="nav-item" data-view="settings" title="设置"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3"/><path d="M1 14h6M9 8h6M17 16h6"/></svg><span>设置</span></button>
+    </nav>
+    <div class="sidebar-foot">
+      <span class="sync-ind" id="syncInd" title="离线模式：数据暂存本机，恢复网络后自动同步">
+        <span class="dot"></span><span id="syncText">离线</span>
+      </span>
+      <span class="save-state" id="saveState" title="草稿自动保存状态">● 已保存</span>
+    </div>
+  </aside>
+
+  <!-- ============ 主列：顶部操作栏 + 视图区 ============ -->
+  <div class="main-col">
+  <header class="topbar">
+    <div class="crumb" id="crumb"><b class="cd">CostDesk</b> · 核算台 &gt; 报价详情</div>
+    <div class="topbar-right">
+      <button class="btn btn-sm" id="btnGlobalSearch" title="全局搜索（Ctrl+K）"><svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg> 搜索 <kbd>Ctrl K</kbd></button>
+      <span class="tools-hint" style="margin-left:0">Ctrl+K 全局搜索 · Ctrl+Q 一键报价 · Ctrl+S 存档 · Ctrl+E 导出 · Ctrl+B 备份</span>
+    </div>
+  </header>
+
+  <!-- ============ 核算台（三段式：顶部常驻操作栏 + 左主区 + 右sticky面板） ============ -->
+  <main id="view-calc" class="view active">
+    <div class="calc-layout">
+      <!-- 左侧：参数录入主区 -->
+      <div class="calc-left">
+        <!-- 顶部常驻操作栏：识别三入口 | 一键报价等（V13：方案摘要条已删除，摘要信息仅在一键报价后于核算结果面板展示） -->
+        <div class="calc-topbar" id="calcTopbar">
+          <div class="ctb-left">
+            <div class="ctb-recognize" title="识别配方：图片 OCR / 粘贴文字 / 文档上传，先确认后入库">
+              <button type="button" class="rec-entry" id="btnImgRecognize"><svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></svg> <span>图片识别</span></button>
+              <button type="button" class="rec-entry" id="btnTextRecognize"><svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2"/><path d="M12 4v16"/><path d="M8 20h8"/></svg> <span>文字识别</span></button>
+              <button type="button" class="rec-entry" id="btnFileRecognize"><svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg> <span>文本配方</span></button>
+              <button type="button" class="btn btn-xs" id="btnRecognHistory" title="最近 10 次识别记录，可回看复用"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></button>
+            </div>
+          </div>
+          <div class="ctb-actions">
+            <button class="btn-cta" id="btnQuote" title="一键核算报价（Ctrl+Q）"><svg class="ic" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8Z"/></svg> 一键报价</button>
+            <button class="btn" id="btnSaveQuote" title="存档生成正式报价单（Ctrl+S）"><svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg> 存档</button>
+            <button class="btn" id="btnExportPdf" title="打印/另存为 PDF 报价单"><svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> PDF</button>
+            <button class="btn" id="btnExportExcel" title="导出 Excel(CSV) 核算明细（Ctrl+E）"><svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg> Excel</button>
+            <button class="btn" id="btnCompare" title="加入方案对比（最多4个）"><svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m8 3-4 4 4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/></svg> 对比</button>
+            <button type="button" class="btn btn-danger" id="btnResetAll" title="一键全重置：清空四个基础板块（产品参数/商务参数/原料清单/包材清单）的全部录入，核算面板回到待核算态。原料价格库/包材库/配方库/报价存档/设置/宠物等持久数据不受影响"><svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg> 全重置</button>
+          </div>
+        </div>
+
+        <!-- 快捷工具条 -->
+        <div class="calc-tools">
+          <button type="button" class="btn btn-sm" id="btnBackCalc" title="按 规格×生产量 反推各原料投料量（含损耗）"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h18"/></svg> 用量反推</button>
+          <button type="button" class="btn btn-sm" id="btnBatchQuote" title="多规格多方案一键对比"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2-10 5 10 5 10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg> 批量报价</button>
+          <button type="button" class="btn btn-sm" id="btnShareQuote" title="生成报价单分享文本/图片"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg> 分享报价</button>
+          <span class="tools-hint">Ctrl+K 全局搜索 · Ctrl+Q 一键报价 · Ctrl+S 存档 · Ctrl+E 导出 · Ctrl+B 备份</span>
+        </div>
+
+        <!-- 空状态：插画 + 四入口卡片（无任何数据时显示） -->
+        <div id="calcEmpty" class="empty-four" style="display:none">
+          <div class="empty-art" aria-hidden="true">
+            <svg viewBox="0 0 340 92" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M58 30h18a8 8 0 0 1 8 8v38a8 8 0 0 1-8 8H58a8 8 0 0 1-8-8V38a8 8 0 0 1 8-8Z" stroke="#93B4F3" stroke-width="1.6" stroke-linecap="round"/>
+              <path d="M62 30V20a6 6 0 0 1 6-6h6a6 6 0 0 1 6 6v10" stroke="#C3D6FA" stroke-width="1.6" stroke-linecap="round"/>
+              <circle cx="68" cy="52" r="4.5" fill="#DBEAFE"/><circle cx="80" cy="52" r="4.5" fill="#DBEAFE"/><circle cx="68" cy="64" r="4.5" fill="#DBEAFE"/><circle cx="80" cy="64" r="4.5" fill="#DBEAFE"/>
+              <circle cx="174" cy="46" r="26" stroke="#93B4F3" stroke-width="1.6"/>
+              <circle cx="174" cy="46" r="17" stroke="#C3D6FA" stroke-width="1.4" stroke-dasharray="3 4"/>
+              <path d="M174 40v6l4 3" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M244 22h-10v10" stroke="#C3D6FA" stroke-width="1.6" stroke-linecap="round"/>
+              <path d="M234 22c8-10 20 4 28-4" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M262 62h18" stroke="#C3D6FA" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="4 4"/>
+              <path d="M262 70h12" stroke="#E5EDFB" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="3 3"/>
+              <text x="280" y="50" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="13" fill="#93B4F3" letter-spacing="1">识别配料表，即刻报价</text>
+            </svg>
+          </div>
+          <button type="button" class="empty-card" id="emptyImg"><span class="ec-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></svg></span><span class="ec-title">识别配方</span><span class="ec-sub">上传配料表图片，OCR 提取</span></button>
+          <button type="button" class="empty-card" id="emptyText"><span class="ec-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2"/><path d="M12 4v16"/><path d="M8 20h8"/></svg></span><span class="ec-title">粘贴文字</span><span class="ec-sub">粘贴配方文字自动解析</span></button>
+          <button type="button" class="empty-card" id="emptyAddMat"><span class="ec-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.5a2 2 0 0 1-.2.9L4.7 20.6a1 1 0 0 0 .9 1.4h12.8a1 1 0 0 0 .9-1.4L14.2 10.4a2 2 0 0 1-.2-.9V2"/><path d="M8.5 2h7M7 16h10"/></svg></span><span class="ec-title">添加原料</span><span class="ec-sub">从原料价格库选择</span></button>
+          <button type="button" class="empty-card" id="emptyFormula"><span class="ec-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.7-.9L9.6 3.9A2 2 0 0 0 7.9 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg></span><span class="ec-title">选配方带入</span><span class="ec-sub">套用已有配方快速开始</span></button>
+        </div>
+
+        <!-- 产品参数 + 商务参数 两列栅格 -->
+        <div class="calc-grid-2">
+          <section class="card" id="card-product">
+            <div class="card-head">
+              <h3 class="card-title">产品参数</h3>
+              <span class="head-right">
+                <span class="card-hint">必填项标 <i class="req">*</i></span>
+                <button type="button" class="btn btn-xs" id="btnResetProd" title="重置「产品参数」板块：清空方案名称/客户/日期/配方/剂型/克重/每瓶数量/净含量/装箱等录入（弹窗确认，不影响其他板块与共享数据）"><svg class="ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg> 重置</button>
+              </span>
+            </div>
+            <div class="form-grid">
+              <label class="field">
+                <span class="f-label">方案名称 <i class="req">*</i></span>
+                <input data-trigger="calc" id="f-name" type="text" placeholder="如：儿童维C软糖·内贸" autocomplete="off">
+              </label>
+              <label class="field">
+                <span class="f-label">客户</span>
+                <input data-trigger="calc" id="f-customer" type="text" placeholder="客户名称（选填）" autocomplete="off">
+              </label>
+              <label class="field">
+                <span class="f-label">报价日期 <i class="req">*</i></span>
+                <input data-trigger="calc" id="f-date" type="date">
+              </label>
+              <label class="field">
+                <span class="f-label">配方方案</span>
+                <select id="f-formula"><option value="">— 手动录入（不套用配方）—</option></select>
+              </label>
+              <label class="field">
+                <span class="f-label">配方版本</span>
+                <select id="f-formulaVer" title="配方版本管理，修改配方自动生成新版本"><option value="">当前版本</option></select>
+              </label>
+              <label class="field">
+                <span class="f-label">剂型 <i class="req">*</i></span>
+                <span class="dosage-pick">
+                  <input id="f-dosageSearch" type="text" placeholder="搜索剂型…" class="dosage-search" autocomplete="off">
+                  <select data-trigger="calc" id="f-dosage"></select>
+                </span>
+              </label>
+              <label class="field">
+                <span class="f-label">单位克重（g） <i class="req">*</i> <span class="tip" data-tip="单粒/单片/每袋的净重，用于把含量%换算为实际投料克重">ⓘ</span></span>
+                <input data-trigger="calc" id="f-weight" type="number" min="0" step="0.01" placeholder="如 3（软糖3g/粒）">
+              </label>
+              <label class="field">
+                <span class="f-label">每瓶数量 <i class="req">*</i> <span class="tip" data-tip="每瓶含多少粒/片/袋，与克重相乘得到每瓶总克重">ⓘ</span></span>
+                <input data-trigger="calc" id="f-count" type="number" min="1" placeholder="如 60（粒/瓶）">
+              </label>
+              <label class="field">
+                <span class="f-label">净含量标注</span>
+                <input data-trigger="calc" id="f-net" type="text" placeholder="如 180g（选填）" autocomplete="off">
+              </label>
+              <label class="field">
+                <span class="f-label">装箱规格</span>
+                <input data-trigger="calc" id="f-box" type="text" placeholder="如 12瓶/箱（选填）" autocomplete="off">
+              </label>
+            </div>
+            <!-- 剂型动态参数字段模板 -->
+            <div id="dosageFields" class="form-grid"></div>
+            <div class="card-note"><span class="dot"></span><b>提示</b>：克重 × 每瓶数量 = 单份投料基准；识别配料表 / 套用配方可自动带入原料与参数。</div>
+          </section>
+
+          <!-- 商务参数（可折叠为一行摘要） -->
+          <section class="card foldable" id="card-biz">
+            <div class="card-head clickable" id="bizToggle" title="点击展开/折叠商务参数">
+              <h3 class="card-title">商务参数 <span class="fold-arrow" id="bizArrow">▸</span></h3>
+              <span class="head-right">
+                <span class="card-hint" id="bizHint"></span>
+                <button type="button" class="btn btn-xs" id="btnResetBiz" title="重置「商务参数」板块：清空 MOQ/计价口径/税率/利润率/管理费/人工费/检测费/运费/汇率等录入并恢复默认（弹窗确认）"><svg class="ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg> 重置</button>
+              </span>
+            </div>
+            <div class="form-grid" id="bizBody">
+              <label class="field">
+                <span class="f-label">订单MOQ（瓶） <i class="req">*</i> <span class="tip" data-tip="最小起订量（Minimum Order Quantity），低于工厂起订量将提示小批量风险">ⓘ</span></span>
+                <input data-trigger="calc" id="f-moq" type="number" min="1" placeholder="如 5000">
+              </label>
+              <label class="field">
+                <span class="f-label">工厂起订量（瓶）</span>
+                <input data-trigger="calc" id="f-factoryMoq" type="number" min="1" placeholder="低于此量提示小批量风险">
+              </label>
+              <label class="field">
+                <span class="f-label">MOQ阶梯（瓶，逗号分隔）</span>
+                <input data-trigger="calc" id="f-ladder" type="text" placeholder="如 1000,3000,5000,10000">
+              </label>
+              <label class="field">
+                <span class="f-label">计价口径 <span class="tip" data-tip="报价是否包含增值税：不含税 = 出厂价未加税；含税 = 在目标利润率基础上再加增值税率">ⓘ</span></span>
+                <span class="seg" id="f-taxInc">
+                  <button type="button" data-v="extax" class="on">不含税</button>
+                  <button type="button" data-v="intax">含税</button>
+                </span>
+              </label>
+              <label class="field">
+                <span class="f-label">增值税率（%）</span>
+                <input data-trigger="calc" id="f-tax" type="number" min="0" step="0.5" value="13">
+              </label>
+              <label class="field">
+                <span class="f-label">目标利润率（%） <i class="req">*</i></span>
+                <input data-trigger="calc" id="f-profit" type="number" min="0" value="30">
+              </label>
+              <label class="field">
+                <span class="f-label">管理费率（%）</span>
+                <input data-trigger="calc" id="f-admin" type="number" min="0" step="0.5" value="0" title="按单份成本计取的管理费率">
+              </label>
+              <label class="field">
+                <span class="f-label">人工费（元/份） <span class="tip" data-tip="V13 起改为手动填写：直接输入每份的人工费金额，0 表示不计人工费。不再依赖剂型工艺档费率，与成本构成/单份/整单/MOQ阶梯/导出全链路实时联动">ⓘ</span></span>
+                <input data-trigger="calc" id="f-processFee" type="number" min="0" step="0.01" value="0" title="手动填写每份人工费（元/份），默认 0">
+              </label>
+              <label class="field">
+                <span class="f-label">定制工艺溢价（%） <span class="tip" data-tip="仅配方类型=定制时参与核算，覆盖配方自带工艺溢价">ⓘ</span></span>
+                <input data-trigger="calc" id="f-premium" type="number" min="0" value="0">
+              </label>
+              <label class="field">
+                <span class="f-label">检测附加费（元/份）</span>
+                <input data-trigger="calc" id="f-testFee" type="number" min="0" value="0">
+              </label>
+              <label class="field">
+                <span class="f-label">运费分摊（元/份）</span>
+                <input data-trigger="calc" id="f-freight" type="number" min="0" value="0">
+              </label>
+              <label class="field">
+                <span class="f-label">汇率（外币→CNY）</span>
+                <input data-trigger="calc" id="f-fx" type="number" min="0" step="0.0001" value="1" title="进口原料多币种换算，默认1（本币）">
+              </label>
+            </div>
+          </section>
+        </div>
+
+        <!-- 原料清单（单行表格，可折叠为一行摘要） -->
+        <section class="card foldable" id="card-mats">
+          <div class="card-head">
+            <div class="ch-left clickable" id="matsToggle" title="点击展开/折叠原料清单">
+              <h3 class="card-title">原料清单 <span class="count-badge" id="matCount">0</span> <span class="fold-arrow" id="matsArrow">▾</span></h3>
+            </div>
+            <div class="card-actions">
+              <button class="btn btn-sm" id="btnResetMats" title="仅重置「原料清单」板块：清空全部原料行（弹窗确认）。不动价格库/配方库/包材清单/产品参数/商务参数"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg> 重置</button>
+              <button class="btn btn-sm btn-danger" id="btnClearMats" title="一键清空当前配方（原料清单；可勾选连带包材）。只清报价草稿，不删价格库/模板/报价记录"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6M14 11v6"/></svg> 清除配方</button>
+              <button class="btn btn-sm" id="btnBestPrice" title="自动为所有原料选择当前最低报价的供应商"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8Z"/></svg> 一键最优价</button>
+              <button class="btn btn-sm btn-primary" id="btnAddMat"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5v14"/></svg> 添加原料</button>
+            </div>
+          </div>
+          <div class="mat-list" id="matList"></div>
+        </section>
+
+        <!-- 包材清单（单行表格，可折叠为一行摘要） -->
+        <section class="card foldable" id="card-packs">
+          <div class="card-head">
+            <div class="ch-left clickable" id="packsToggle" title="点击展开/折叠包材清单">
+              <h3 class="card-title">包材清单 <span class="count-badge" id="packCount">0</span> <span class="fold-arrow" id="packsArrow">▾</span></h3>
+            </div>
+            <div class="card-actions">
+              <button class="btn btn-sm" id="btnResetPacks" title="仅重置「包材清单」板块：清空全部包材行（弹窗确认）。不动包材库/原料清单/产品参数/商务参数"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg> 重置</button>
+              <button class="btn btn-sm btn-primary" id="btnAddPack" title="打开侧滑抽屉，搜索多选添加"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5v14"/></svg> 添加包材</button>
+            </div>
+          </div>
+          <div class="pack-list" id="packList"></div>
+        </section>
+      </div>
+
+      <!-- 右侧：实时核算结果（sticky）+ 最近使用 -->
+      <aside class="calc-right">
+        <div class="recent-card" id="recentBox">
+          <div class="recent-head" id="recentToggle">
+            <h3><svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="color:var(--primary);margin-right:6px;vertical-align:-2px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>最近使用</h3>
+            <span class="fold-arrow" id="recentArrow">▸</span>
+          </div>
+          <div class="recent-body" id="recentBody" style="display:none"></div>
+        </div>
+        <div class="result-card">
+          <div class="result-head">
+            <h3>实时核算结果</h3>
+            <span class="result-tools">
+              <button type="button" class="btn btn-xs" id="btnSnapshots" title="每次一键报价自动记录参数快照，可回滚对比"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> 快照</button>
+              <button type="button" class="btn btn-xs" id="btnBackCalc2" title="按 规格×生产量 反推投料量"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h18"/></svg> 反推</button>
+            </span>
+            <span class="result-state" id="resultState">待核算</span>
+          </div>
+          <div id="resultBody">
+            <div class="empty-state">
+              <div class="empty-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 11h.01M12 11h.01M16 11h.01M8 15h.01M12 15h.01M16 15h.01M8 19h.01M12 19h.01M16 19h.01"/></svg></div>
+              <p>填写左侧参数后点击 <b>「一键报价」</b><br>或直接修改任意参数，结果将实时刷新</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- ============ 原料价格库 ============ -->
+  <main id="view-mats" class="view">
+    <div class="page-head">
+      <div>
+        <h2>原料价格库</h2>
+        <p class="page-sub">主数据 + 多供应商价格 + 价格历史与预警。报价时价格必须绑定供应商。</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn" id="matPasteParse"><svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg> 解析粘贴报价单</button>
+        <button class="btn" id="matBatchImport"><svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg> 批量导入(CSV)</button>
+        <button class="btn btn-primary" id="matAdd"><svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5v14"/></svg> 新增原料</button>
+      </div>
+    </div>
+    <div class="toolbar">
+      <input id="matSearch" type="text" class="search" placeholder="搜索原料名称 / INCI / CAS / 分类…">
+      <select id="matFilterCat"><option value="">全部分类</option></select>
+      <select id="matFilterGrade"><option value="">全部级别</option><option>食品级</option><option>医药级</option><option>USP</option><option>EP</option></select>
+      <select id="matFilterWarn"><option value="">全部</option><option value="alert">⚠ 仅看预警/过期</option></select>
+      <select id="matFilterTag"><option value="">全部标签</option></select>
+    </div>
+    <div id="matGrid" class="mat-grid"></div>
+  </main>
+
+  <!-- ============ 包材库 ============ -->
+  <main id="view-packs" class="view">
+    <div class="page-head">
+      <div>
+        <h2>包材库</h2>
+        <p class="page-sub">瓶身/瓶盖/彩盒/标签等，含单价、MOQ、损耗率、印刷费、开模费。</p>
+      </div>
+      <div class="page-actions"><button class="btn btn-primary" id="packAdd"><svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5v14"/></svg> 新增包材</button></div>
+    </div>
+    <div class="toolbar">
+      <input id="packSearch" type="text" class="search" placeholder="搜索包材名称 / 供应商…">
+    </div>
+    <div id="packGrid" class="pack-grid"></div>
+  </main>
+
+  <!-- ============ 配方库 ============ -->
+  <main id="view-forms" class="view">
+    <div class="page-head">
+      <div>
+        <h2>配方库</h2>
+        <p class="page-sub">配方是可复用资产：原料含量 + 剂型 + 工艺备注。支持版本管理与模糊搜索。</p>
+      </div>
+      <div class="page-actions"><button class="btn btn-primary" id="formAdd"><svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5v14"/></svg> 新建配方</button></div>
+    </div>
+    <div class="toolbar">
+      <input id="formSearch" type="text" class="search" placeholder="搜索配方名称 / 剂型 / 原料名称…">
+      <select id="formFilterDosage"><option value="">全部剂型</option></select>
+      <select id="formFilterTag"><option value="">全部标签</option></select>
+    </div>
+    <div id="formGrid" class="form-grid2"></div>
+  </main>
+
+  <!-- ============ 报价存档 ============ -->
+  <main id="view-quotes" class="view">
+    <div class="page-head">
+      <div>
+        <h2>报价存档</h2>
+        <p class="page-sub">正式报价单，状态流转：草稿 → 已报价 → 客户确认 → 已下单 / 已流失。存档不可篡改。</p>
+      </div>
+    </div>
+    <div class="toolbar">
+      <input id="qSearch" type="text" class="search" placeholder="搜索报价编号 / 方案名称 / 客户…">
+      <select id="qFilterStatus">
+        <option value="">全部状态</option>
+        <option>草稿</option><option>已报价</option><option>客户确认</option><option>已下单</option><option>已流失</option>
+      </select>
+      <select id="qFilterTag"><option value="">全部标签</option></select>
+      <button class="btn btn-sm" id="qFilterMonth" title="按月切换"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> 按月</button>
+    </div>
+    <div id="convBoard" class="conv-board"></div>
+    <div id="quoteList" class="quote-list"></div>
+  </main>
+
+  <!-- ============ 预警看板 ============ -->
+  <main id="view-watch" class="view">
+    <div class="page-head">
+      <div><h2>预警看板</h2><p class="page-sub">价格超限 / 采购价过期 / 行情异动，集中处理。</p></div>
+    </div>
+    <div id="watchBoard" class="watch-board"></div>
+  </main>
+
+  <!-- ============ 设置 ============ -->
+  <main id="view-settings" class="view">
+    <div class="page-head">
+      <div><h2>设置</h2><p class="page-sub">剂型管理、费率参数、报价单模板、公式树审计、数据备份恢复。</p></div>
+    </div>
+    <div class="settings-layout">
+      <section class="card">
+        <div class="card-head">
+          <h3 class="card-title">剂型管理</h3>
+          <div class="card-actions">
+            <button class="btn btn-sm btn-primary" id="dosageAdd"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5v14"/></svg> 新增剂型</button>
+            <button class="btn btn-sm" id="dosageCopyFrom"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> 从现有剂型复制模板</button>
+          </div>
+        </div>
+        <div id="dosageList" class="dosage-list"></div>
+      </section>
+      <section class="card">
+        <div class="card-head"><h3 class="card-title">全局费率与规则</h3></div>
+        <div class="form-grid">
+          <label class="field"><span class="f-label">默认增值税率（%）</span><input id="s-tax" type="number" min="0" step="0.5"></label>
+          <label class="field"><span class="f-label">默认目标利润率（%）</span><input id="s-profit" type="number" min="0"></label>
+          <label class="field"><span class="f-label">低利润预警线（%）</span><input id="s-lowProfit" type="number" min="0"></label>
+          <label class="field"><span class="f-label">默认管理费率（%）</span><input id="s-admin" type="number" min="0" step="0.5"></label>
+          <label class="field"><span class="f-label">报价编号前缀</span><input id="s-noPrefix" type="text" placeholder="BK"></label>
+          <label class="field"><span class="f-label">编号日期格式</span>
+            <select id="s-noDateFmt"><option value="YYYYMM">年月（202608）</option><option value="YYYYMMDD">年月日（20260831）</option></select>
+          </label>
+          <label class="field"><span class="f-label">默认MOQ阶梯（逗号分隔）</span><input id="s-ladder" type="text"></label>
+          <label class="field"><span class="f-label">草稿自动保存间隔（秒）</span><input id="s-autoSave" type="number" min="5"></label>
+        </div>
+        <div class="card-foot"><button class="btn btn-primary" id="btnSaveSettings">保存设置</button></div>
+      </section>
+      <section class="card">
+        <div class="card-head">
+          <h3 class="card-title">原料自动分类规则</h3>
+          <span class="card-hint">输入原料名称时按关键词自动建议分类（最长关键词优先）</span>
+        </div>
+        <div class="rule-head rule-row">
+          <span>关键词（原料名包含即命中）</span><span>分类</span><span style="width:34px"></span>
+        </div>
+        <div id="catRuleList" class="rule-list"></div>
+        <div class="row-gap mt8">
+          <button class="btn btn-sm" id="catRuleAdd"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5v14"/></svg> 添加规则</button>
+          <button class="btn btn-sm" id="catRuleReset">恢复默认规则</button>
+          <button class="btn btn-primary" id="catRuleSave">保存规则</button>
+        </div>
+        <datalist id="catRuleCats"></datalist>
+        <p class="muted mt8" style="font-size:12px">规则立即对新增原料 / 识别入库 / 报价单解析生效；已存档原料不会强制重分类。分类可自由填写（支持自定义分类）。</p>
+      </section>
+      <section class="card" id="card-ai">
+        <div class="card-head">
+          <h3 class="card-title">AI 识别增强（可选）</h3>
+          <span class="card-hint">配置后 OCR 与报价单文本先经 AI 结构化，未配置/无网/失败自动回退本地解析</span>
+        </div>
+        <div class="form-grid">
+          <label class="field"><span class="f-label">AI 识别</span>
+            <select id="s-aiEnabled"><option value="0">关闭（默认 · 纯本地解析）</option><option value="1">开启</option></select>
+          </label>
+          <label class="field"><span class="f-label">接口地址 Endpoint</span><input id="s-aiEndpoint" type="text" placeholder="如：https://api.openai.com/v1/chat/completions"></label>
+          <label class="field"><span class="f-label">API Key</span><input id="s-aiKey" type="password" placeholder="sk-…（仅保存在本机浏览器）"></label>
+          <label class="field"><span class="f-label">模型名（文本模型）</span><input id="s-aiModel" type="text" placeholder="如：gpt-4o-mini（报价单/配方文本解析）"></label>
+          <label class="field"><span class="f-label">视觉模型（图片识别）</span><input id="s-aiVisionModel" type="text" placeholder="如：gpt-4o / qwen-vl-plus（留空沿用文本模型）"></label>
+        </div>
+        <p class="muted mt8" style="font-size:12px">兼容 OpenAI Chat Completions 格式（POST {model, messages}）。开启后：图片优先送<b>视觉模型</b>（图片 base64 直接识别，乱码率远低于本地 OCR），文本/报价单送<b>文本模型</b>；未配置/无网/失败自动回退本地解析（本地模式）。AI 结果仅作为建议回填预览，展示置信度与来源标记，入库前仍需人工确认。API Key 仅保存在本机浏览器。</p>
+      </section>
+      <section class="card">
+        <div class="card-head">
+          <h3 class="card-title">报价单模板（PDF 自定义）</h3>
+          <span class="card-hint">LOGO / 抬头信息 / 备注条款，存档报价单套用</span>
+        </div>
+        <div class="form-grid" id="pdfTemplateForm">
+          <label class="field"><span class="f-label">公司 LOGO（图片URL或Base64）</span><input id="pt-logo" type="text" placeholder="https://…/logo.png 或 data:image/…"></label>
+          <label class="field"><span class="f-label">抬头公司名称</span><input id="pt-company" type="text" placeholder="如：XX健康科技有限公司"></label>
+          <label class="field"><span class="f-label">联系人</span><input id="pt-contact" type="text" placeholder="业务联系人"></label>
+          <label class="field"><span class="f-label">联系电话</span><input id="pt-phone" type="text" placeholder="手机/座机"></label>
+          <label class="field"><span class="f-label">公司地址</span><input id="pt-address" type="text" placeholder="注册/办公地址"></label>
+          <label class="field span2"><span class="f-label">备注条款（每行一条）</span><textarea id="pt-notes" rows="3" placeholder="1. 本报价含税/运费以双方确认为准；&#10;2. 报价有效期 15 天；"></textarea></label>
+          <label class="field span2"><span class="f-label">页脚文字</span><input id="pt-footer" type="text" placeholder="内部核算参考件 · 仅供业务使用"></label>
+        </div>
+        <div class="card-foot">
+          <button class="btn" id="btnPdfLogoUpload"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></svg> 本地上传 LOGO</button>
+          <button class="btn btn-primary" id="btnSavePdfTemplate">保存模板</button>
+          <input type="file" id="pdfLogoFile" accept="image/*" style="display:none">
+        </div>
+      </section>
+      <section class="card">
+        <div class="card-head"><h3 class="card-title">成本核算公式树（可审计）</h3></div>
+        <div id="formulaTree" class="formula-tree"></div>
+      </section>
+      <section class="card" id="card-pet-settings">
+        <div class="card-head">
+          <h3 class="card-title">报价小宠 · 养成</h3>
+          <span class="card-hint">经验由每次「一键报价」累加，报价越多体型越大（幼 → 成 → 大橘）</span>
+        </div>
+        <p class="page-sub">当前状态：<b id="petGrowState">—</b></p>
+        <div class="row-gap">
+          <button class="btn" id="btnResetPetGrowth">重置宠物养成</button>
+        </div>
+        <p class="muted mt8" style="font-size:12px">重置会把<b>经验 / 体型 / 昵称</b>归零回到幼体，便于新用户或想重新养成的用户；<b>不影响</b>桌宠位置记忆与已选动物，也不影响任何报价数据。</p>
+      </section>
+      <section class="card">
+        <div class="card-head"><h3 class="card-title">数据备份与恢复</h3></div>
+        <p class="page-sub">导出完整 JSON 备份（含剂型/原料/包材/配方/报价），支持导入恢复。</p>
+        <div class="row-gap">
+          <button class="btn" id="btnExportJson"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg> 导出 JSON 备份</button>
+          <button class="btn" id="btnImportJson"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg> 导入恢复</button>
+          <input type="file" id="importJsonFile" accept=".json" style="display:none">
+          <button class="btn btn-danger" id="btnResetData"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M8 16H3v5"/></svg> 恢复示例数据</button>
+        </div>
+      </section>
+    </div>
+  </main>
+  </div><!-- /main-col -->
+</div>
+
+<!-- 报价小宠：可拖动常驻胶囊小精灵（SVG 内联，localStorage 独立持久化） -->
+<div id="petRoot" aria-label="报价小宠">
+  <div id="petBubble" class="pet-bubble"></div>
+</div>
+<div id="petOverlay" class="pet-overlay" style="display:none"></div>
+
+<!-- 报价单打印视图 -->
+<div id="printRoot" class="print-only"></div>
+
+<!-- 包材侧滑抽屉 -->
+<div id="packDrawer" class="drawer-mask" style="display:none">
+  <div class="drawer">
+    <div class="drawer-head">
+      <h3>添加包材</h3>
+      <button type="button" class="modal-close" id="packDrawerClose">×</button>
+    </div>
+    <div class="drawer-body">
+      <input id="packDrawerSearch" type="text" class="search" placeholder="搜索包材名称 / 类型 / 供应商…">
+      <div class="drawer-list" id="packDrawerList"></div>
+    </div>
+    <div class="drawer-foot">
+      <span class="muted" id="packDrawerSel">已选 0 项</span>
+      <button type="button" class="btn" id="packDrawerCancel">取消</button>
+      <button type="button" class="btn btn-primary" id="packDrawerAdd">添加所选（0）</button>
+    </div>
+  </div>
+</div>
+
+<!-- 弹窗容器 -->
+<div id="modalRoot"></div>
+<div id="toastRoot"></div>
+
+<script>
+/*__JS__*/
+</script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "name": "costdesk",
+  "version": "14.0.0",
+  "private": true,
+  "description": "成本台 CostDesk — 保健品 OEM 报价工作台（单文件离线 HTML）",
+  "scripts": {
+    "build": "node build.js",
+    "test": "node run-all.js",
+    "verify": "node build.js && node run-all.js"
+  },
+  "devDependencies": {
+    "jsdom": "^29.1.1"
+  }
+}

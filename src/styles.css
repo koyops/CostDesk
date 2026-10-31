@@ -1,0 +1,1443 @@
+/* ============================================================
+   OEM 报价工作台 V4 · 设计系统
+   品牌蓝 #2563EB（辅助 #1D4ED8，渐变 #2563EB→#3B82F6）
+   背景层级 #F5F7FA → 卡片 #FFFFFF（柔和阴影分层，无粗边框）
+   圆角 卡片12 / 控件8 · 间距 8 基数 · 数字 tabular-nums 等宽右对齐千分位
+   ============================================================ */
+:root{
+  --primary:#2563EB; --primary-d:#1D4ED8; --primary-l:#EFF6FF;
+  --bg:#F5F7FA; --card:#FFFFFF;
+  --text:#111827; --text2:#4B5563; --text3:#9CA3AF;
+  --border:#E2E8F0; --border2:#D6DAE2;
+  --danger:#DC2626; --danger-l:#FEF2F2;
+  --ok:#16A34A; --ok-l:#F0FDF4;
+  --warn:#F59E0B; --warn-l:#FFFBEB;
+  --shadow:0 1px 2px rgba(16,24,40,.06),0 4px 12px rgba(16,24,40,.08);
+  --shadow-hover:0 2px 4px rgba(16,24,40,.08),0 10px 28px rgba(16,24,40,.12);
+  --radius:12px; --radius-sm:8px;
+  --grad:linear-gradient(135deg,#2563EB,#3B82F6);
+  --mono:'SF Mono',Consolas,'Cascadia Mono',monospace;
+  --font-stack:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Source Han Sans SC','Microsoft YaHei',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+  background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;
+  min-width:1280px;overflow-x:hidden;
+}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:#c9cdd4;border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:#a9aeb8}
+button{font-family:inherit;cursor:pointer}
+input,select,textarea{font-family:inherit;font-size:13px;color:var(--text)}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--primary);outline-offset:-1px;border-color:var(--primary)!important}
+input[type=number]{text-align:right}
+.req{color:var(--danger);font-style:normal}
+
+/* ---------- 顶部导航 ---------- */
+.topbar{
+  position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:20px;
+  height:52px;padding:0 20px;background:#fff;border-bottom:1px solid var(--border);
+  box-shadow:0 1px 4px rgba(0,0,0,.04);
+}
+.brand{display:flex;align-items:center;gap:8px;min-width:200px}
+.brand-logo{
+  width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,var(--primary),#69b1ff);
+  color:#fff;font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;
+}
+.brand-name{font-weight:600;font-size:15px;white-space:nowrap}
+.mainnav{display:flex;gap:4px;flex:1;overflow-x:auto}
+.nav-item{
+  border:none;background:transparent;padding:7px 14px;border-radius:6px;
+  font-size:14px;color:var(--text2);white-space:nowrap;transition:.15s;
+}
+.nav-item:hover{background:#f2f3f5;color:var(--text)}
+.nav-item.active{background:var(--primary-l);color:var(--primary);font-weight:600}
+.topbar-right{display:flex;align-items:center;gap:14px}
+.sync-ind{
+  display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;
+  background:#f2f3f5;font-size:12px;color:var(--text2);cursor:default;
+}
+.sync-ind .dot{width:8px;height:8px;border-radius:50%;background:#c9cdd4;flex:none}
+.sync-ind.online .dot{background:var(--ok)}
+.sync-ind.warn .dot{background:var(--warn);animation:pulse 1.2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.save-state{font-size:12px;color:var(--text3);white-space:nowrap}
+
+/* ---------- 视图切换 ---------- */
+.view{display:none;padding:16px 20px 40px}
+.view.active{display:block}
+.page-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;gap:16px}
+.page-head h2{font-size:19px;font-weight:600}
+.page-sub{color:var(--text3);font-size:13px;margin-top:3px}
+.page-actions{display:flex;gap:8px;flex:none}
+.toolbar{display:flex;gap:10px;margin-bottom:14px;align-items:center;flex-wrap:wrap}
+.search{width:300px;max-width:40vw}
+
+/* ---------- 通用控件 ---------- */
+.btn{
+  border:1px solid var(--border2);background:#fff;color:var(--text);
+  padding:7px 14px;border-radius:6px;font-size:13px;transition:.15s;
+  display:inline-flex;align-items:center;gap:5px;white-space:nowrap;
+}
+.btn:hover{border-color:var(--primary);color:var(--primary);box-shadow:0 1px 3px rgba(22,119,255,.15)}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--primary);border-color:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-d);border-color:var(--primary-d);color:#fff}
+.btn-danger{color:var(--danger);border-color:#ffccc7}
+.btn-danger:hover{border-color:var(--danger);color:var(--danger)}
+.btn-sm{padding:4px 10px;font-size:12px;border-radius:5px}
+.btn[disabled]{opacity:.5;cursor:not-allowed;pointer-events:none}
+.btn-cta{
+  flex:1;min-width:200px;padding:12px 20px;font-size:16px;font-weight:700;
+  background:linear-gradient(135deg,#1677ff,#0958d9);color:#fff;border:none;border-radius:8px;
+  box-shadow:0 4px 12px rgba(22,119,255,.4);transition:.18s;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-cta:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(22,119,255,.5)}
+.btn-cta:active{transform:translateY(0)}
+.btn-cta.busy{pointer-events:none;opacity:.75}
+.card{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  box-shadow:var(--shadow);margin-bottom:16px;padding:16px 18px;
+}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.card-title{font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px}
+.card-title::before{content:'';width:4px;height:16px;border-radius:2px;background:var(--primary);display:inline-block}
+.card-hint{font-size:12px;color:var(--text3);font-weight:400}
+.card-actions{display:flex;gap:8px}
+.card-foot{margin-top:14px;padding-top:12px;border-top:1px dashed var(--border)}
+.count-badge{
+  background:var(--primary-l);color:var(--primary);font-size:12px;font-weight:600;
+  padding:1px 8px;border-radius:10px;
+}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px 16px}
+.field{display:flex;flex-direction:column;gap:5px}
+.f-label{font-size:12.5px;color:var(--text2);display:flex;gap:2px;align-items:center}
+.field input,.field select,.field textarea{
+  border:1px solid var(--border2);border-radius:6px;padding:7px 10px;background:#fff;width:100%;
+}
+.field input::placeholder{color:#b6bcc4}
+.field input.error,.field select.error{border-color:var(--danger);background:var(--danger-l)}
+.field .err-msg{color:var(--danger);font-size:11.5px;min-height:0;display:none}
+.field.invalid .err-msg{display:block}
+.field.invalid input,.field.invalid select{border-color:var(--danger);background:var(--danger-l)}
+.seg{display:inline-flex;border:1px solid var(--border2);border-radius:6px;overflow:hidden}
+.seg button{border:none;background:#fff;padding:7px 14px;font-size:13px;color:var(--text2)}
+.seg button.on{background:var(--primary);color:#fff;font-weight:600}
+.seg button:not(.on):hover{background:#f2f3f5}
+.dosage-pick{position:relative;display:flex}
+.dosage-pick .dosage-search{position:absolute;inset:0;z-index:2;opacity:0;cursor:pointer;border:1px solid var(--border2);border-radius:6px}
+.dosage-pick select{width:100%;border:1px solid var(--border2);border-radius:6px;padding:7px 10px;background:#fff}
+.dosage-search:focus{opacity:1;z-index:3;background:#fff}
+.row-gap{display:flex;gap:10px;flex-wrap:wrap}
+
+/* ---------- 原料清单行 ---------- */
+.mat-list,.pack-list{display:flex;flex-direction:column;gap:10px}
+.line{
+  border:1px solid var(--border);border-radius:8px;padding:10px 12px;
+  display:grid;grid-template-columns:minmax(150px,1.6fr) repeat(auto-fit,minmax(110px,1fr)) auto;
+  gap:10px;align-items:center;background:#fafbfc;transition:.15s;
+}
+.line:hover{border-color:var(--primary);box-shadow:var(--shadow-hover)}
+.line.expired{border-color:var(--danger);background:var(--danger-l)}
+.line .l-name{font-weight:600;font-size:13.5px}
+.line .l-sub{font-size:11.5px;color:var(--text3);margin-top:2px}
+.line .l-cell{display:flex;flex-direction:column;gap:3px}
+.line .l-cell label{font-size:11px;color:var(--text3)}
+.line .l-cell input,.line .l-cell select{
+  border:1px solid var(--border2);border-radius:5px;padding:5px 8px;width:100%;background:#fff;font-size:13px;
+}
+.price-expired{color:var(--danger)!important;border-color:var(--danger)!important;background:var(--danger-l)!important}
+.tag{display:inline-block;font-size:10.5px;padding:1px 6px;border-radius:4px;margin-left:4px;vertical-align:1px}
+.tag-warn{background:var(--warn-l);color:var(--warn);border:1px solid #ffd591}
+.tag-danger{background:var(--danger-l);color:var(--danger);border:1px solid #ffa39e}
+.tag-ok{background:var(--ok-l);color:var(--ok);border:1px solid #b7eb8f}
+.tag-info{background:var(--primary-l);color:var(--primary);border:1px solid #91caff}
+.tag-gray{background:#f2f3f5;color:var(--text3);border:1px solid var(--border2)}
+.l-del{border:none;background:transparent;color:#c9cdd4;font-size:16px;padding:4px}
+.l-del:hover{color:var(--danger)}
+.l-del.pin{color:var(--primary)}
+.icon-btn{border:none;background:transparent;color:var(--text3);font-size:14px;padding:3px 6px;border-radius:4px}
+.icon-btn:hover{background:#f2f3f5;color:var(--text)}
+.empty-state{
+  text-align:center;padding:36px 16px;color:var(--text3);font-size:13px;
+  border:1px dashed var(--border2);border-radius:8px;background:#fafbfc;
+}
+.empty-state .empty-icon{font-size:34px;margin-bottom:10px}
+.empty-state b{color:var(--text)}
+
+/* ---------- 核算结果栏 ---------- */
+.calc-layout{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:16px;align-items:start}
+.calc-left{min-width:0}
+.calc-right{position:sticky;top:68px}
+.result-card{
+  background:#fff;border:1px solid var(--border);border-radius:var(--radius);
+  box-shadow:var(--shadow);overflow:hidden;
+}
+.result-head{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:13px 16px;border-bottom:1px solid var(--border);background:#fafbfc;
+}
+.result-head h3{font-size:14.5px;font-weight:600}
+.result-state{font-size:12px;color:var(--text3)}
+.result-state.live{color:var(--ok);font-weight:600}
+.result-state.calc{color:var(--warn)}
+.result-body{padding:14px 16px}
+.r-section{border-bottom:1px dashed var(--border);padding:10px 0}
+.r-section:last-child{border-bottom:none}
+.r-section-title{font-size:12px;color:var(--text3);margin-bottom:8px;display:flex;justify-content:space-between}
+.r-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:3px 0}
+.r-row .k{color:var(--text2)}
+.r-row .v{font-family:var(--mono);font-weight:500}
+.r-row.total{font-weight:700;font-size:14px;border-top:1px solid var(--border);margin-top:6px;padding-top:8px}
+.r-big{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.r-big .cell{
+  background:var(--primary-l);border-radius:8px;padding:10px 12px;text-align:center;
+}
+.r-big .cell .n{font-size:19px;font-weight:700;color:var(--primary);font-family:var(--mono)}
+.r-big .cell .l{font-size:11.5px;color:var(--primary-d);margin-top:2px}
+.r-big .cell.alt{background:#f7f8fa}
+.r-big .cell.alt .n{color:var(--text)}
+.r-big .cell.alt .l{color:var(--text3)}
+.ladder-table{width:100%;border-collapse:collapse;font-size:13px}
+.ladder-table th,.ladder-table td{border:1px solid var(--border);padding:6px 8px;text-align:right}
+.ladder-table th{background:#fafbfc;font-weight:600;color:var(--text2);text-align:center}
+.ladder-table td:first-child,.ladder-table th:first-child{text-align:left}
+.ladder-table tr.moq-cur td{background:var(--primary-l)}
+.rc-warn{border:1px solid #ffd591;background:var(--warn-l);border-radius:6px;padding:7px 10px;font-size:12.5px;color:#ad6800;margin:6px 0}
+.rc-err{border:1px solid #ffa39e;background:var(--danger-l);border-radius:6px;padding:7px 10px;font-size:12.5px;color:var(--danger);margin:6px 0}
+.detail-toggle{background:none;border:none;color:var(--primary);font-size:12px;cursor:pointer;padding:2px}
+.detail-toggle:hover{text-decoration:underline}
+
+/* 骨架屏 */
+.skeleton{animation:sk 1.2s infinite alternate}
+@keyframes sk{from{opacity:.5}to{opacity:1}}
+.sk-line{height:13px;border-radius:4px;background:#e5e6eb;margin:8px 0}
+.sk-line.w60{width:60%}.sk-line.w80{width:80%}.sk-line.w40{width:40%}
+
+/* ---------- 底部快捷操作栏 ---------- */
+.action-dock{
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+  background:#fff;border:1px solid var(--border);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:12px 16px;position:sticky;bottom:10px;z-index:50;
+}
+.dock-hint{font-size:11.5px;color:var(--text3);margin-left:auto}
+
+/* ---------- 原料库卡片 ---------- */
+.mat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:14px}
+.mat-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;transition:.15s}
+.mat-card:hover{box-shadow:var(--shadow-hover)}
+.mat-card .mc-head{padding:12px 14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.mat-card .mc-name{font-weight:600;font-size:14px}
+.mat-card .mc-meta{font-size:11.5px;color:var(--text3);margin-top:3px;display:flex;flex-wrap:wrap;gap:4px 10px}
+.mat-card .mc-body{padding:10px 14px}
+.price-row{display:grid;grid-template-columns:1.4fr 1fr auto;gap:6px 10px;align-items:center;padding:7px 0;border-bottom:1px dashed var(--border);font-size:12.5px}
+.price-row:last-child{border-bottom:none}
+.price-row .pr-price{font-family:var(--mono);font-weight:600;font-size:13.5px;text-align:right}
+.price-row .pr-price .cur{font-size:10.5px;color:var(--text3);font-weight:400}
+.price-row .pr-src{font-size:10.5px;color:var(--text3)}
+.price-row .pr-date{font-size:11px;color:var(--text3)}
+.price-row.expired{background:var(--danger-l)}
+.mc-foot{padding:8px 14px;border-top:1px solid var(--border);background:#fafbfc;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--text3)}
+.mc-foot .mc-acts{display:flex;gap:6px}
+.spark{width:100%;height:54px;display:block;margin-top:6px}
+.threshold-line{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--text3);margin-top:8px}
+.threshold-line input{width:90px;border:1px solid var(--border2);border-radius:5px;padding:4px 6px;text-align:right}
+
+/* ---------- 包材库 ---------- */
+.pack-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.pack-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:12px 14px}
+.pack-card .pc-name{font-weight:600;font-size:14px}
+.pack-card .pc-meta{font-size:12px;color:var(--text3);margin-top:4px;display:flex;flex-wrap:wrap;gap:3px 12px}
+
+/* ---------- 配方库 ---------- */
+.form-grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
+.form-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:13px 15px;transition:.15s}
+.form-card:hover{box-shadow:var(--shadow-hover)}
+.form-card .fc-name{font-weight:600;font-size:14.5px;display:flex;align-items:center;gap:8px}
+.form-card .fc-meta{font-size:12px;color:var(--text3);margin:5px 0 8px;display:flex;flex-wrap:wrap;gap:3px 12px}
+.form-card .fc-mats{font-size:12px;color:var(--text2);max-height:72px;overflow:hidden;position:relative}
+.form-card .fc-mats::after{content:'';position:absolute;bottom:0;left:0;right:0;height:24px;background:linear-gradient(transparent,#fff)}
+.form-card .fc-acts{display:flex;gap:6px;margin-top:10px}
+
+/* ---------- 报价存档 ---------- */
+.conv-board{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:16px}
+.conv-cell{background:#fff;border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:12px 14px}
+.conv-cell .cc-l{font-size:12px;color:var(--text3)}
+.conv-cell .cc-v{font-size:20px;font-weight:700;font-family:var(--mono);margin-top:2px}
+.conv-cell .cc-s{font-size:11.5px;color:var(--text3);margin-top:3px}
+.quote-list{display:flex;flex-direction:column;gap:10px}
+.quote-row{
+  background:#fff;border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);
+  padding:13px 16px;display:grid;grid-template-columns:1.2fr 1.5fr 1fr 1fr auto auto;gap:12px;align-items:center;
+}
+.quote-row .qr-no{font-family:var(--mono);font-weight:600;font-size:13px;color:var(--primary)}
+.quote-row .qr-name{font-weight:600;font-size:14px}
+.quote-row .qr-sub{font-size:11.5px;color:var(--text3);margin-top:2px}
+.status-pill{display:inline-block;font-size:11.5px;padding:2px 10px;border-radius:12px;font-weight:600;white-space:nowrap}
+.st-draft{background:#f2f3f5;color:var(--text2)}
+.st-quoted{background:var(--primary-l);color:var(--primary)}
+.st-confirmed{background:#e6fffb;color:#13c2c2}
+.st-ordered{background:var(--ok-l);color:var(--ok)}
+.st-lost{background:var(--danger-l);color:var(--danger)}
+
+/* ---------- 预警看板 ---------- */
+.watch-board{display:flex;flex-direction:column;gap:14px}
+.watch-group .wg-title{font-size:15px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.watch-item{
+  background:#fff;border:1px solid var(--border);border-left:4px solid var(--warn);border-radius:6px;
+  padding:10px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:12px;
+}
+.watch-item.urgent{border-left-color:var(--danger)}
+.watch-item .wi-main{font-size:13.5px}
+.watch-item .wi-sub{font-size:11.5px;color:var(--text3);margin-top:2px}
+.watch-item .wi-acts{flex:none;display:flex;gap:6px}
+
+/* ---------- 剂型管理 ---------- */
+.dosage-list{display:flex;flex-direction:column;gap:8px}
+.dosage-item{
+  border:1px solid var(--border);border-radius:8px;padding:10px 14px;
+  display:grid;grid-template-columns:1.2fr 2fr 1.6fr auto;gap:12px;align-items:center;
+}
+.dosage-item.disabled{opacity:.55}
+.dosage-item .di-name{font-weight:600;font-size:14px}
+.dosage-item .di-fields{font-size:12px;color:var(--text3)}
+.dosage-item .di-nums{font-size:12px;color:var(--text2);font-family:var(--mono)}
+.dosage-item .di-acts{display:flex;gap:6px;justify-content:flex-end}
+.switch{position:relative;width:36px;height:20px;border-radius:10px;background:#c9cdd4;border:none;transition:.2s}
+.switch.on{background:var(--ok)}
+.switch::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.switch.on::after{left:18px}
+
+/* ---------- 公式树 ---------- */
+.formula-tree{font-size:13px;line-height:1.9}
+.formula-tree .ft-node{padding:6px 10px;border-radius:6px;background:#fafbfc;border:1px solid var(--border);margin-bottom:6px}
+.formula-tree .ft-node .expr{font-family:var(--mono);font-size:12.5px;color:var(--primary-d)}
+.formula-tree .ft-node .desc{font-size:11.5px;color:var(--text3)}
+
+/* ---------- 弹窗 ---------- */
+.modal-mask{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:1000;display:flex;align-items:flex-start;justify-content:center;padding:6vh 20px;overflow:auto}
+.modal{
+  background:#fff;border-radius:12px;box-shadow:0 12px 48px rgba(0,0,0,.2);
+  width:100%;max-width:680px;animation:md .18s ease;
+}
+@keyframes md{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+.modal.wide{max-width:860px}
+.modal-head{display:flex;justify-content:space-between;align-items:center;padding:15px 20px;border-bottom:1px solid var(--border)}
+.modal-head h3{font-size:16px;font-weight:600}
+.modal-close{border:none;background:transparent;font-size:20px;color:var(--text3);cursor:pointer}
+.modal-close:hover{color:var(--text)}
+.modal-body{padding:18px 20px;max-height:68vh;overflow:auto}
+.modal-foot{padding:13px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px}
+.modal .form-grid{margin-bottom:10px}
+
+/* ---------- Toast ---------- */
+#toastRoot{position:fixed;top:64px;left:50%;transform:translateX(-50%);z-index:2000;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
+.toast{
+  background:#1f2329;color:#fff;padding:9px 18px;border-radius:8px;font-size:13px;
+  box-shadow:0 4px 16px rgba(0,0,0,.25);animation:tst .25s ease;max-width:80vw;
+}
+.toast.ok{background:#389e0d}
+.toast.warn{background:#d46b08}
+.toast.err{background:#cf1322}
+@keyframes tst{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+
+/* ---------- 打印（PDF 导出） ---------- */
+#printRoot{display:none}
+@media print{
+  body{background:#fff;min-width:0}
+  #app{display:none!important}
+  #printRoot{display:block!important}
+  .print-only{display:block!important}
+}
+.print-doc{font-size:12px;color:#000;padding:8px 4px;font-family:-apple-system,'Microsoft YaHei',sans-serif}
+.print-doc h1{font-size:20px;text-align:center;margin-bottom:2px}
+.print-doc .pd-sub{text-align:center;color:#555;font-size:11px;margin-bottom:14px}
+.print-doc h2{font-size:13px;margin:12px 0 6px;border-bottom:1px solid #ddd;padding-bottom:3px}
+.print-doc table{width:100%;border-collapse:collapse;margin:4px 0}
+.print-doc th,.print-doc td{border:1px solid #999;padding:4px 6px;text-align:left;font-size:11.5px}
+.print-doc th{background:#f0f0f0}
+.print-doc .pd-meta{display:flex;gap:18px;flex-wrap:wrap;font-size:11.5px;margin:8px 0}
+.print-doc .pd-total{text-align:right;font-size:13px;margin-top:6px}
+.print-doc .pd-foot{margin-top:20px;font-size:10.5px;color:#666;border-top:1px solid #ccc;padding-top:6px}
+
+/* ---------- V14 识别弹窗「✨AI 识别」快捷开关 ---------- */
+.ai-bar{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  border:1px solid var(--border);background:#F8FAFF;border-radius:8px;
+  padding:7px 9px;margin-bottom:10px;
+}
+.ai-bar-off{background:#FAFAFB;border-color:var(--border2)}
+.ai-toggle{
+  display:inline-flex;align-items:center;gap:6px;flex-shrink:0;
+  border:1px solid var(--border2);background:#fff;border-radius:16px;
+  padding:4px 10px;font-size:12px;color:var(--text2);cursor:pointer;
+  font-family:inherit;transition:.15s;
+}
+.ai-toggle .ait-ic{font-size:12.5px;line-height:1}
+.ai-toggle .ait-state{
+  font-size:10.5px;color:var(--text3);border-left:1px solid var(--border2);
+  padding-left:6px;margin-left:1px;
+}
+.ai-toggle:hover{border-color:var(--primary);color:var(--primary)}
+.ai-toggle.on{background:var(--primary);border-color:var(--primary);color:#fff}
+.ai-toggle.on .ait-state{color:rgba(255,255,255,.85);border-left-color:rgba(255,255,255,.45)}
+.ai-toggle.on:hover{background:var(--primary-d);color:#fff}
+.ai-toggle.off{background:#F3F4F6;color:var(--text3);border-color:var(--border2);cursor:not-allowed}
+.ai-toggle.off:hover{border-color:var(--border2);color:var(--text3)}
+.ai-bar .ai-tip{font-size:11px;color:var(--text3);flex:1;min-width:0;line-height:1.45}
+
+/* ---------- V14 必填校验显眼化：红点 / 可点击错误条目 / 可点击 toast ---------- */
+.field.has-req-dot,#matList.has-req-dot{position:relative}
+.req-dot{
+  position:absolute;top:-3px;right:-3px;width:9px;height:9px;border-radius:50%;
+  background:var(--danger);box-shadow:0 0 0 2px #fff,0 0 6px rgba(220,38,38,.55);
+  animation:reqPulse 1.05s ease-in-out infinite;pointer-events:none;z-index:3;
+}
+@keyframes reqPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.3);opacity:.7}}
+.calc-warn-list .err-jump{
+  display:flex;align-items:center;gap:8px;width:100%;text-align:left;cursor:pointer;
+  border:1px dashed transparent;background:transparent;border-radius:5px;padding:2px 5px;
+  font:inherit;font-size:12.5px;color:#ad6800;transition:.15s;
+}
+.calc-warn-list .err-jump:hover{border-color:#ffa39e;background:#fff5f5;color:var(--danger)}
+.calc-warn-list .err-jump .ej-go{margin-left:auto;font-size:11px;color:var(--danger);opacity:0;transition:.15s;flex-shrink:0}
+.calc-warn-list .err-jump:hover .ej-go{opacity:1}
+.err-hint{margin:6px 0 0;font-size:11px;color:var(--text3)}
+.toast-act{cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.22);text-decoration:underline;text-underline-offset:2px}
+.toast-act:hover{filter:brightness(1.08)}
+
+/* ---------- 杂项 ---------- */
+.calc-warn-list{margin:6px 0}
+.calc-warn-list li{margin-left:18px;font-size:12.5px;color:#ad6800}
+.text-right{text-align:right}
+.mono{font-family:var(--mono)}
+.muted{color:var(--text3)}
+.mt8{margin-top:8px}.mt12{margin-top:12px}
+.help-keys{font-size:11px;color:var(--text3);font-family:var(--mono)}
+kbd{
+  font-family:var(--mono);background:#f2f3f5;border:1px solid var(--border2);border-bottom-width:2px;
+  border-radius:4px;padding:0 5px;font-size:11px;
+}
+
+/* ============================================================
+   V3 新增样式：三段式核算台 / 识别配方 / 抽屉 / 饼图 / 折叠 / 面包屑
+   ============================================================ */
+
+/* ---------- 顶部常驻操作栏（sticky） ---------- */
+.calc-topbar{
+  position:sticky;top:52px;z-index:80;display:flex;align-items:center;gap:12px;
+  background:#fff;border:1px solid var(--border);border-radius:10px;
+  box-shadow:var(--shadow);padding:9px 14px;margin-bottom:12px;
+}
+.ctb-left{display:flex;flex-direction:column;gap:6px;min-width:0;flex:1}
+.crumb{font-size:11px;color:var(--text3);white-space:nowrap}
+.crumb b{color:var(--text2);font-weight:600}
+.ctb-recognize{display:flex;align-items:center;gap:4px}
+.rec-entry{
+  border:1px solid var(--border2);background:#fff;border-radius:6px;
+  padding:5px 10px;font-size:12.5px;color:var(--text);display:inline-flex;align-items:center;gap:4px;
+  transition:.15s;white-space:nowrap;
+}
+.rec-entry:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-l)}
+.rec-entry:active{transform:translateY(1px)}
+/* V13：方案摘要条已删除 —— 操作栏仅保留识别入口 + 动作区 */
+.ctb-actions{display:flex;gap:8px;align-items:center;flex:none;margin-left:auto}
+.ctb-actions .btn-cta{min-width:150px;padding:10px 18px;font-size:15px;flex:none}
+
+/* ---------- 快捷工具条 ---------- */
+.calc-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.tools-hint{font-size:11px;color:var(--text3);margin-left:auto;font-family:var(--mono)}
+
+/* ---------- 空状态四入口 ---------- */
+.empty-four{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;
+}
+.empty-card{
+  background:#fff;border:1px dashed var(--border2);border-radius:10px;padding:18px 12px;
+  display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;
+  transition:.18s;color:var(--text);
+}
+.empty-card:hover{border-color:var(--primary);box-shadow:var(--shadow-hover);transform:translateY(-2px)}
+.empty-card .ec-icon{font-size:30px}
+.empty-card .ec-title{font-weight:600;font-size:14px}
+.empty-card .ec-sub{font-size:11.5px;color:var(--text3)}
+
+/* ---------- 两列栅格（产品参数 | 商务参数） ---------- */
+.calc-grid-2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+.calc-grid-2 .card{margin-bottom:16px}
+@media (max-width:1360px){ .calc-grid-2{grid-template-columns:1fr} }
+
+/* ---------- 折叠区块 ---------- */
+.card.foldable .card-head.clickable{cursor:pointer;user-select:none}
+.fold-arrow{display:inline-block;font-size:11px;color:var(--text3);transition:.18s;margin-left:4px}
+.card.foldable.collapsed .fold-arrow{transform:rotate(-90deg)}
+.card.foldable.collapsed .form-grid{display:none}
+.card.foldable.collapsed .card-hint{color:var(--text2);font-weight:500}
+
+/* ---------- 专业术语 tooltip ---------- */
+.tip{
+  display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;
+  border-radius:50%;border:1px solid var(--text3);color:var(--text3);font-size:10px;
+  cursor:help;position:relative;flex:none;margin-left:2px;
+}
+.tip::after{
+  content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);
+  background:#1f2329;color:#fff;font-size:11px;line-height:1.45;padding:6px 9px;border-radius:6px;
+  white-space:normal;width:190px;opacity:0;pointer-events:none;transition:.15s;z-index:200;font-weight:400;
+}
+.tip:hover::after{opacity:1}
+
+/* ---------- 最近使用 ---------- */
+.recent-card{
+  background:#fff;border:1px solid var(--border);border-radius:var(--radius);
+  box-shadow:var(--shadow);margin-bottom:12px;overflow:hidden;
+}
+.recent-head{
+  display:flex;justify-content:space-between;align-items:center;padding:10px 14px;
+  cursor:pointer;user-select:none;
+}
+.recent-head h3{font-size:13px;font-weight:600}
+.recent-body{padding:8px 14px 12px;border-top:1px solid var(--border)}
+.recent-group{margin-bottom:8px}
+.recent-group:last-child{margin-bottom:0}
+.recent-group .rg-title{font-size:11px;color:var(--text3);margin-bottom:4px}
+.recent-group .rg-chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{
+  border:1px solid var(--border2);background:#fafbfc;border-radius:14px;padding:3px 10px;
+  font-size:11.5px;color:var(--text2);cursor:pointer;transition:.15s;max-width:100%;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.chip:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-l)}
+
+/* V14：报价条目行（名称 + 时间 + 单份成本，整行点击载入复用） */
+.recent-group .rg-list{display:flex;flex-direction:column;gap:5px}
+.rg-item{
+  display:flex;align-items:center;gap:8px;width:100%;text-align:left;
+  border:1px solid var(--border2);background:#fafbfc;border-radius:8px;
+  padding:6px 8px;cursor:pointer;transition:.15s;font-family:inherit;
+}
+.rg-item:hover{border-color:var(--primary);background:var(--primary-l)}
+.rg-item .rgi-main{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1}
+.rg-item .rgi-name{font-size:12px;color:var(--text);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rg-item .rgi-meta{font-size:10.5px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rg-item .rgi-cost{display:flex;flex-direction:column;align-items:flex-end;line-height:1.25;flex-shrink:0}
+.rg-item .rgi-cost b{font-size:12px;color:var(--primary);font-family:var(--mono);font-weight:600}
+.rg-item .rgi-cost i{font-size:9.5px;color:var(--text3);font-style:normal}
+.rg-item .rgi-go{
+  flex-shrink:0;font-size:10.5px;color:var(--text3);border-left:1px solid var(--border2);
+  padding-left:8px;transition:.15s;
+}
+.rg-item:hover .rgi-go{color:var(--primary)}
+
+/* ---------- 核算结果面板工具按钮 ---------- */
+.result-tools{display:flex;gap:4px;margin-right:8px}
+.result-head{gap:8px;flex-wrap:wrap}
+.btn-xs{padding:2px 7px;font-size:11px;border-radius:4px}
+
+/* ---------- 成本构成迷你饼图 ---------- */
+.pie-wrap{display:flex;gap:12px;align-items:center;padding:6px 0}
+.pie-svg{flex:none}
+.pie-legend{flex:1;display:flex;flex-direction:column;gap:3px;font-size:12px}
+.pie-legend .pl-row{display:flex;align-items:center;gap:6px}
+.pie-legend .pl-dot{width:9px;height:9px;border-radius:2px;flex:none}
+.pie-legend .pl-k{color:var(--text2);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pie-legend .pl-v{font-family:var(--mono);font-weight:600}
+.pie-seg{transition:opacity .15s;cursor:pointer}
+.pie-svg:hover .pie-seg{opacity:.65}
+.pie-svg .pie-seg:hover{opacity:1}
+
+/* ---------- 侧滑抽屉（包材多选） ---------- */
+.drawer-mask{position:fixed;inset:0;background:rgba(15,23,42,.4);z-index:900;display:flex;justify-content:flex-end}
+.drawer{
+  width:420px;max-width:92vw;height:100%;background:#fff;box-shadow:-8px 0 32px rgba(0,0,0,.18);
+  display:flex;flex-direction:column;animation:drw .22s ease;
+}
+@keyframes drw{from{transform:translateX(40px);opacity:.4}to{transform:none;opacity:1}}
+.drawer-head{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--border)}
+.drawer-head h3{font-size:15px;font-weight:600}
+.drawer-body{flex:1;overflow:auto;padding:14px 18px;display:flex;flex-direction:column;gap:10px}
+.drawer-foot{display:flex;justify-content:flex-end;align-items:center;gap:10px;padding:13px 18px;border-top:1px solid var(--border)}
+.drawer-foot .muted{font-size:12px;margin-right:auto}
+.dp-item{
+  border:1px solid var(--border);border-radius:8px;padding:9px 12px;display:flex;gap:10px;
+  align-items:flex-start;cursor:pointer;transition:.15s;background:#fafbfc;
+}
+.dp-item:hover{border-color:var(--primary)}
+.dp-item.sel{border-color:var(--primary);background:var(--primary-l)}
+.dp-item input{margin-top:3px;flex:none}
+.dp-item .dp-main{flex:1;min-width:0}
+.dp-item .dp-name{font-weight:600;font-size:13px}
+.dp-item .dp-sub{font-size:11px;color:var(--text3);margin-top:1px}
+.dp-item .dp-price{font-family:var(--mono);font-size:12.5px;color:var(--primary);font-weight:600;flex:none}
+
+/* ---------- 识别确认弹窗 ---------- */
+.recognize-ta{
+  width:100%;border:1px solid var(--border2);border-radius:8px;padding:10px 12px;
+  font-size:13px;line-height:1.7;resize:vertical;min-height:110px;background:#fafbfc;
+}
+.recognize-demo{cursor:pointer;color:var(--primary)}
+.recognize-demo:hover{text-decoration:underline}
+.rec-head{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.rec-tag{
+  display:inline-block;background:var(--primary-l);color:var(--primary);border:1px solid #91caff;
+  font-size:11.5px;padding:2px 8px;border-radius:12px;
+}
+.rec-tag.rec-warn{background:var(--warn-l);color:#ad6800;border-color:#ffd591}
+.rec-tag.rec-ai{background:var(--ok-l);color:#047857;border-color:#a7f3d0}
+.rec-tag.rec-local{background:var(--warn-l);color:#ad6800;border-color:#ffd591}
+.rec-table-wrap{overflow:auto;max-height:46vh;border:1px solid var(--border);border-radius:8px}
+.rec-table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:760px}
+.rec-table th{background:#fafbfc;font-weight:600;color:var(--text2);padding:7px 8px;border-bottom:1px solid var(--border);text-align:left;font-size:11.5px;position:sticky;top:0;z-index:2}
+.rec-table td{padding:5px 6px;border-bottom:1px dashed var(--border)}
+.rec-table tr:hover td{background:#fafbfc}
+.rec-table input,.rec-table select{border:1px solid var(--border2);border-radius:5px;padding:4px 6px;width:100%;background:#fff;font-size:12.5px}
+.rec-table input.r-amount,.rec-table input.r-ratio{text-align:right}
+.rec-match-ok{color:var(--ok);font-size:12px}
+.rec-match-no{color:var(--danger);font-size:12px;margin-right:4px}
+.conf{font-size:11px;font-weight:600;padding:1px 7px;border-radius:10px;display:inline-block}
+.conf-hi{background:var(--ok-l);color:var(--ok)}
+.conf-mid{background:var(--warn-l);color:#ad6800}
+.conf-lo{background:var(--danger-l);color:var(--danger)}
+/* V13：识别质量提示——低置信行红标 + 待确认角标 + 来源徽标 */
+.rec-table tr.row-low td{background:#fff5f5}
+.rec-table tr.row-low:hover td{background:#ffecec}
+.rec-table tr.row-low td:first-child{border-left:3px solid var(--danger)}
+.rec-pending{
+  display:inline-block;background:var(--danger-l);color:var(--danger);border:1px solid #fecaca;
+  font-size:10.5px;padding:0 6px;border-radius:9px;margin-left:4px;vertical-align:middle;font-weight:600;
+}
+.src-badge{
+  display:inline-block;font-size:10px;padding:0 5px;border-radius:8px;margin-left:4px;
+  vertical-align:middle;font-weight:600;letter-spacing:.5px;
+}
+.src-badge.src-ai{background:var(--ok-l);color:#047857}
+.src-badge.src-local{background:#f1f5f9;color:#64748b}
+.rec-ops{display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap}
+.rec-ops .muted{margin-left:auto;text-align:right}
+
+/* ---------- 识别历史 ---------- */
+.rec-history{display:flex;flex-direction:column;gap:8px}
+.rec-h-item{
+  border:1px solid var(--border);border-radius:8px;padding:9px 12px;
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+}
+.rec-h-item:hover{box-shadow:var(--shadow)}
+.rec-h-main{flex:1;min-width:0}
+.rec-h-preview{font-size:11.5px;color:var(--text3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rec-h-ops{display:flex;gap:6px;flex:none}
+
+/* ---------- 扫描动画 ---------- */
+.scan-box{text-align:center;padding:14px 6px}
+.scan-ring{
+  width:56px;height:56px;margin:4px auto 14px;border-radius:50%;
+  border:4px solid var(--primary-l);border-top-color:var(--primary);
+  animation:spin 1s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.scan-text{font-size:13.5px;color:var(--text)}
+
+/* ---------- 校验失败高亮 ---------- */
+@keyframes errflash{0%{box-shadow:0 0 0 3px rgba(245,34,45,.35)}100%{box-shadow:0 0 0 0 rgba(245,34,45,0)}}
+.field.invalid input,.field.invalid select{animation:errflash .8s ease 2}
+
+/* ---------- 批量报价 / 反推表 ---------- */
+.batch-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.batch-table th,.batch-table td{border:1px solid var(--border);padding:6px 8px;text-align:right}
+.batch-table th{background:#fafbfc;text-align:center;font-weight:600;color:var(--text2)}
+.batch-table td:first-child,.batch-table th:first-child{text-align:left}
+.batch-table tr.b-best td{background:var(--ok-l)}
+
+/* ---------- 打印模板（V3：LOGO/抬头/备注） ---------- */
+.pd-company{display:flex;align-items:center;gap:14px;margin-bottom:8px}
+.pd-company .pd-logo{width:52px;height:52px;object-fit:contain;flex:none}
+.pd-company .pd-cname{font-size:17px;font-weight:700}
+.pd-company .pd-cmeta{font-size:10.5px;color:#666;line-height:1.6}
+.pd-notes{margin:8px 0;font-size:11px;color:#444;background:#fafafa;border:1px dashed #ccc;border-radius:6px;padding:8px 10px;white-space:pre-line}
+
+/* ---------- 标签筛选 chips ---------- */
+.tagbar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.tag-chip{
+  border:1px solid var(--border2);background:#fff;border-radius:14px;padding:3px 11px;
+  font-size:11.5px;color:var(--text2);cursor:pointer;transition:.15s;
+}
+.tag-chip.on{background:var(--primary);border-color:var(--primary);color:#fff}
+.tag-chip:hover:not(.on){border-color:var(--primary);color:var(--primary)}
+
+/* ---------- 价格趋势（红线）说明 ---------- */
+.trend-red{color:var(--danger);font-size:10.5px}
+.span2{grid-column:span 2}
+
+/* ---------- 全局搜索（Ctrl+K） ---------- */
+.gs-overlay{position:fixed;inset:0;z-index:1000;background:rgba(15,23,42,.45);display:flex;align-items:flex-start;justify-content:center;padding-top:12vh}
+.gs-box{width:min(640px,92vw);background:#fff;border-radius:12px;box-shadow:0 18px 60px rgba(0,0,0,.22);overflow:hidden;display:flex;flex-direction:column;max-height:70vh}
+.gs-head{display:flex;align-items:center;border-bottom:1px solid var(--border);padding:10px 12px;gap:8px}
+.gs-input{flex:1;border:1px solid var(--border2);border-radius:8px;padding:9px 12px;font-size:14px;outline:none}
+.gs-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(22,119,255,.12)}
+.gs-close{border:none;background:transparent;font-size:20px;color:var(--text3);cursor:pointer;padding:2px 8px;line-height:1}
+.gs-close:hover{color:var(--danger)}
+.gs-results{overflow:auto;flex:1;padding:6px}
+.gs-group{font-size:11px;color:var(--text3);padding:8px 10px 4px;font-weight:600}
+.gs-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13px}
+.gs-item.sel,.gs-item:hover{background:#f0f5ff}
+.gs-ic{flex:none;width:22px;text-align:center}
+.gs-t{font-weight:600;color:var(--text1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:38%}
+.gs-s{color:var(--text3);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
+.gs-go{color:var(--primary);font-size:12px;opacity:0}
+.gs-item.sel .gs-go{opacity:1}
+.gs-empty{padding:34px 0;text-align:center;color:var(--text3);font-size:13px}
+.gs-foot{padding:8px 14px;border-top:1px solid var(--border);font-size:11px;color:var(--text3)}
+
+/* ---------- 卡片内标签（原料/配方/报价） ---------- */
+.mat-tags{display:inline-flex;gap:4px;margin-left:8px;vertical-align:middle}
+.tag-flat{background:#eef4ff;color:#3d6fd6;border:1px solid #d6e4ff;border-radius:10px;padding:1px 8px;font-size:10.5px;font-weight:500}
+.tag-flat:hover{background:#dbe9ff}
+.quote-row .mat-tags{display:inline-flex;margin-left:0;gap:4px;margin-top:3px}
+
+/* ---------- 转化看板 V3：按月/剂型/客户 ---------- */
+.conv-sub{margin-top:14px;border-top:1px dashed var(--border2);padding-top:10px}
+.cs-title{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px}
+.conv-chart{width:100%;max-width:560px;display:block}
+.conv-groups{display:flex;flex-direction:column;gap:6px;max-width:560px}
+.cg-row{display:flex;align-items:center;gap:10px;font-size:12px}
+.cg-name{width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text2)}
+.cg-bar{flex:1;height:8px;background:#f2f3f5;border-radius:4px;overflow:hidden}
+.cg-bar i{display:block;height:100%;background:linear-gradient(90deg,#1677ff,#4d9bff);border-radius:4px}
+.cg-num{width:88px;text-align:right;color:var(--text3);font-size:11px}
+.cg-rate{width:42px;text-align:right;font-weight:600;color:var(--ok)}
+
+/* ============================================================
+   V4 设计系统覆盖层：现代高级 B 端质感（Stripe/Linear/Notion 基准）
+   在既有组件之上做精细覆盖，不推倒任何已有能力
+   ============================================================ */
+body{font-family:var(--font-stack);background:var(--bg)}
+.ic{display:inline-block;vertical-align:-2.5px;flex:none}
+kbd{font-size:10.5px}
+
+/* ---------- 顶部导航：白底 + 细分隔线 + 品牌蓝下划线动效 ---------- */
+.topbar{border-bottom:1px solid var(--border);box-shadow:0 1px 2px rgba(16,24,40,.04);gap:16px}
+.nav-item{position:relative;padding:8px 14px;border-radius:0;font-size:13.5px;color:var(--text2)}
+.nav-item::after{content:'';position:absolute;left:14px;right:14px;bottom:-1px;height:2px;border-radius:2px;background:var(--grad);transform:scaleX(0);opacity:0;transition:transform .2s ease,opacity .2s ease}
+.nav-item:hover{background:transparent;color:var(--primary)}
+.nav-item:hover::after{transform:scaleX(.45);opacity:1}
+.nav-item.active{background:transparent;color:var(--primary);font-weight:600}
+.nav-item.active::after{transform:scaleX(1);opacity:1}
+.sync-ind{background:#F3F4F6;border:1px solid var(--border)}
+.save-state{font-size:11.5px}
+
+/* ---------- 按钮：8px 圆角 + 柔和阴影 + 按压 0.98 ---------- */
+.btn{border-radius:8px;box-shadow:0 1px 2px rgba(16,24,40,.05);transition:all .18s ease;font-size:13px}
+.btn:hover{transform:translateY(-1px);box-shadow:0 2px 8px rgba(37,99,235,.16)}
+.btn:active{transform:scale(.98) translateY(0)}
+.btn-primary{background:var(--primary);border-color:var(--primary);color:#fff;box-shadow:0 2px 8px rgba(37,99,235,.22)}
+.btn-primary:hover{background:var(--primary-d);border-color:var(--primary-d);color:#fff}
+.btn-danger{border-color:#FECACA;color:var(--danger)}
+.btn-danger:hover{border-color:var(--danger);color:#fff;background:var(--danger)}
+.btn-sm{border-radius:6px}
+.btn-xs{border-radius:5px}
+
+/* ---------- 一键报价 CTA：品牌蓝渐变最大视觉权重 ---------- */
+.btn-cta{background:var(--grad);border-radius:10px;box-shadow:0 4px 14px rgba(37,99,235,.32);letter-spacing:.2px}
+.btn-cta:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(37,99,235,.4)}
+.btn-cta:active{transform:scale(.98)}
+.btn-cta.busy{pointer-events:none;opacity:.8}
+
+/* ---------- 卡片：柔和阴影分层，边框几乎不可见 ---------- */
+.card{border:1px solid #F0F2F6;border-radius:12px;box-shadow:var(--shadow);transition:box-shadow .2s ease,transform .2s ease}
+.card:hover{box-shadow:var(--shadow-hover)}
+.card-title{font-size:15px}
+.card-title::before{background:var(--grad);border-radius:1.5px}
+.mat-card,.pack-card,.form-card,.conv-cell,.quote-row{border:1px solid #F0F2F6;border-radius:12px;box-shadow:var(--shadow)}
+.mat-card:hover,.pack-card:hover,.form-card:hover,.quote-row:hover{box-shadow:var(--shadow-hover)}
+
+/* ---------- 输入控件：36px 高 + 聚焦品牌蓝光晕 ---------- */
+.field input,.field select,.field textarea,.search,.gs-input,.recognize-ta{height:36px;border-radius:8px;border-color:var(--border2);transition:border-color .15s ease,box-shadow .15s ease}
+.field textarea,.recognize-ta{height:auto;min-height:96px}
+.field input::placeholder,.search::placeholder{color:#B7BDC7}
+.field input:focus,.field select:focus,.field textarea:focus,.search:focus,.recognize-ta:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+.line .l-cell input,.line .l-cell select{height:30px;border-radius:6px}
+.seg{border-radius:8px}
+.seg button.on{background:var(--primary)}
+.seg button:not(.on):hover{background:#F3F4F6}
+
+/* ---------- 数字：tabular-nums 等宽 + 右对齐 + 千分位 ---------- */
+input[type=number],.r-row .v,.r-big .cell .n,.conv-cell .cc-v,.price-row .pr-price,.pl-v,
+.mono,.ladder-table td,.batch-table td,.di-nums,.qr-no,.cc-n{font-variant-numeric:tabular-nums}
+input[type=number]{text-align:right}
+.r-row .v{font-family:var(--mono)}
+.r-big .cell .n{font-size:20px}
+
+/* ---------- 表格 hover 浅蓝底 / 选中行左侧 3px 品牌蓝竖条 ---------- */
+.rec-table tr:hover td{background:#EFF6FF}
+.rec-table tr td:first-child{border-left:3px solid transparent}
+.rec-table tr.sel td{background:#EFF6FF}
+.rec-table tr.sel td:first-child{border-left-color:var(--primary)}
+.rec-table input,.rec-table select{border-radius:6px}
+.line:hover{border-color:#BFDBFE;background:#F8FAFF;box-shadow:var(--shadow)}
+.line.sel{border-color:var(--primary);box-shadow:inset 3px 0 0 var(--primary)}
+.ladder-table tr.moq-cur td,.batch-table tr.b-best td{background:var(--primary-l)}
+.gs-item.sel,.gs-item:hover{background:#EFF6FF}
+
+/* ---------- 状态/标签徽章：浅色圆角 ---------- */
+.status-pill{border-radius:20px;padding:2px 11px;font-size:11px;letter-spacing:.2px}
+.st-draft{background:#F3F4F6;color:var(--text2)}
+.st-quoted{background:var(--primary-l);color:var(--primary)}
+.st-confirmed{background:#ECFEFF;color:#0891B2}
+.st-ordered{background:var(--ok-l);color:var(--ok)}
+.st-lost{background:var(--danger-l);color:var(--danger)}
+.tag{border-radius:6px;padding:1px 7px}
+.tag-warn{background:var(--warn-l);color:#B45309;border-color:#FDE68A}
+.tag-danger{background:var(--danger-l);color:var(--danger);border-color:#FECACA}
+.tag-ok{background:var(--ok-l);color:var(--ok);border-color:#BBF7D0}
+.tag-info{background:var(--primary-l);color:var(--primary);border-color:#BFDBFE}
+.count-badge{background:var(--primary-l);color:var(--primary)}
+.rec-tag{border-radius:14px;background:var(--primary-l);color:var(--primary);border-color:#BFDBFE}
+.conf-hi{background:var(--ok-l);color:var(--ok)}
+.conf-mid{background:var(--warn-l);color:#B45309}
+.conf-lo{background:var(--danger-l);color:var(--danger)}
+
+/* ---------- 弹窗 / Toast / 抽屉：更精致的圆角阴影 ---------- */
+.modal{border-radius:14px;box-shadow:0 20px 60px rgba(16,24,40,.18)}
+.modal-head h3{font-size:16px}
+.toast{border-radius:10px;font-size:13px}
+.drawer{border-radius:14px 0 0 14px}
+.recent-card,.result-card{border:1px solid #F0F2F6;border-radius:12px;box-shadow:var(--shadow)}
+.result-head{background:#FBFCFE;border-bottom:1px solid var(--border)}
+
+/* ---------- 骨架屏 V4：流光扫过，禁止空白 ---------- */
+.skeleton{background:linear-gradient(90deg,#F1F3F6 25%,#E8EBF0 37%,#F1F3F6 63%);background-size:400% 100%;animation:sk-shimmer 1.3s ease infinite;border-radius:10px;padding:14px}
+@keyframes sk-shimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
+.sk-line{background:#E5E9F0;border-radius:6px;height:14px}
+
+/* ---------- 数字更新高亮闪烁 ---------- */
+@keyframes numflash{0%{color:var(--primary);background:rgba(37,99,235,.10)}100%{color:inherit;background:transparent}}
+.flash{animation:numflash .8s ease}
+
+/* ---------- 识别扫描动效（OCR 加载/识别进度） ---------- */
+.scan-ring{border-width:3px;border-color:#DBEAFE;border-top-color:var(--primary)}
+.scan-prog{font-size:12.5px;color:var(--primary-d);margin-top:6px;min-height:18px}
+.scan-ops{margin-top:14px;display:flex;justify-content:center;gap:8px}
+
+/* ---------- 空状态：插画 + 四入口卡片 ---------- */
+.empty-art{display:flex;justify-content:center;padding:4px 0 2px}
+.empty-art svg{max-width:340px;height:auto}
+.empty-four{gap:14px}
+.empty-card{background:linear-gradient(180deg,#FBFCFE,#FFFFFF);border:1px solid #E4E9F2;border-radius:12px;box-shadow:0 1px 2px rgba(16,24,40,.04);transition:all .2s ease}
+.empty-card:hover{border-color:var(--primary);box-shadow:var(--shadow-hover);transform:translateY(-3px)}
+.empty-card .ec-icon{width:44px;height:44px;border-radius:12px;background:var(--primary-l);display:flex;align-items:center;justify-content:center;color:var(--primary);margin-bottom:2px}
+.empty-card .ec-title{font-size:14px}
+.empty-card .ec-sub{font-size:11.5px}
+
+/* ---------- 识别入口 / 快捷工具条（图标化） ---------- */
+.rec-entry{border-radius:8px;padding:6px 11px;font-size:12.5px;gap:6px;border-color:var(--border2)}
+.rec-entry:hover{border-color:var(--primary);background:var(--primary-l);color:var(--primary)}
+.ctb-recognize .btn-xs{width:28px;height:28px;padding:0;display:inline-flex;align-items:center;justify-content:center}
+.calc-topbar{border-radius:12px;box-shadow:var(--shadow)}
+
+/* ---------- 折叠/展开过渡 200ms ---------- */
+.fold-arrow{transition:transform .2s ease}
+.card.foldable.collapsed .fold-arrow{transform:rotate(-90deg)}
+.recent-head .fold-arrow{transition:transform .2s ease}
+
+/* ---------- 数字结果卡：品牌蓝数值高亮 ---------- */
+.r-big .cell{background:var(--primary-l);border-radius:10px}
+.r-big .cell .n{color:var(--primary-d)}
+.r-big .cell.alt{background:#F3F4F6}
+.r-big .cell.alt .n{color:var(--text)}
+.r-row.total .v{color:var(--primary-d)}
+.rc-warn{border-radius:8px;border-color:#FDE68A;color:#B45309}
+.rc-err{border-radius:8px;border-color:#FECACA}
+
+/* ---------- 全局搜索：精致化 ---------- */
+.gs-box{border-radius:14px;box-shadow:0 20px 60px rgba(16,24,40,.2)}
+.gs-item{border-radius:8px}
+.gs-item .gs-ic{color:var(--primary)}
+
+/* ---------- 价格趋势红线说明徽章 ---------- */
+.trend-red{background:var(--danger-l);padding:1px 6px;border-radius:6px}
+
+/* ---------- 转化看板 ---------- */
+.conv-cell .cc-v{font-size:21px;color:var(--text)}
+.cg-bar i{background:linear-gradient(90deg,#2563EB,#60A5FA)}
+
+/* ---------- 滚动条 V4 ---------- */
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:#CBD2DC;border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:#A9B2C0}
+
+/* ---------- 图片识别拖拽区（V4 OCR 入口） ---------- */
+.ocr-drop{border:1.5px dashed var(--border2);border-radius:10px;background:#FAFBFF;padding:18px;text-align:center;cursor:pointer;transition:border-color .18s ease,background .18s ease}
+.ocr-drop:hover{border-color:var(--primary);background:var(--primary-l)}
+.ocr-drop .od-ic{color:var(--primary);margin-bottom:6px}
+.ocr-drop .od-t{font-size:13px;color:var(--text2)}
+.ocr-drop .od-s{font-size:11.5px;color:var(--text3);margin-top:2px}
+
+/* ---------- OCR 扫描进度条（V4：进度驱动，不自动超时关闭） ---------- */
+.scan-track{height:6px;border-radius:999px;background:#E9ECF1;overflow:hidden;margin:14px 8px 0}
+.scan-fill{height:100%;border-radius:999px;background:var(--grad);transition:width .25s ease}
+
+/* ---------- 按钮/内联图标对齐 ---------- */
+.btn .ic{vertical-align:-2px;margin-right:5px}
+.btn-xs .ic{vertical-align:-1px;margin-right:0}
+.icon-btn .ic,.l-del .ic{vertical-align:-1px;margin-right:0;display:block}
+.rec-match-ok .ic{vertical-align:-1px;margin-right:2px}
+.rec-h-item .ic{vertical-align:-1px;margin-right:2px}
+.cs-title .ic,.wg-title .ic{vertical-align:-2px;margin-right:5px}
+.recognize-demo{display:inline-flex;align-items:center;gap:4px;cursor:pointer;transition:color .15s ease}
+.recognize-demo:hover{color:var(--primary)}
+
+/* ============================================================
+   V5 覆盖层：专业客户端质感（左侧固定导航）+ 紧凑表格清单 + 拖拽识别 + 报价小宠
+   原则：只叠加覆盖，不推倒任何既有规则；1280px 无横向滚动
+   ============================================================ */
+
+/* ---------- 应用外壳：左侧固定导航 + 主列 ---------- */
+.app-shell{display:flex;min-height:100vh;align-items:stretch}
+.sidebar{
+  width:196px;flex:none;position:sticky;top:0;height:100vh;overflow-y:auto;
+  background:#fff;border-right:1px solid var(--border);z-index:90;
+  display:flex;flex-direction:column;padding:14px 10px;
+}
+.sidebar .brand{padding:2px 8px 14px;border-bottom:1px solid var(--border);min-width:0;margin-bottom:10px}
+.sidebar .brand-name{font-size:13.5px;line-height:1.35;white-space:normal}
+.sidebar-nav{display:flex;flex-direction:column;gap:2px;flex:1}
+.sidebar .nav-item{
+  display:flex;align-items:center;gap:9px;width:100%;text-align:left;
+  padding:9px 11px;border-radius:8px;font-size:13.5px;color:var(--text2);
+  position:relative;border:none;background:transparent;transition:all .18s ease;white-space:nowrap;
+}
+.sidebar .nav-item .ic{color:var(--text3);transition:color .18s ease}
+.sidebar .nav-item:hover{background:#F3F6FC;color:var(--text)}
+.sidebar .nav-item:hover .ic{color:var(--primary)}
+.sidebar .nav-item.active{background:var(--primary-l);color:var(--primary);font-weight:600}
+.sidebar .nav-item.active .ic{color:var(--primary)}
+.sidebar .nav-item.active::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:3px;background:var(--primary)}
+.sidebar .nav-item::after{display:none}
+.sidebar-foot{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.sidebar-foot .save-state{font-size:11px}
+.main-col{flex:1;min-width:0;display:flex;flex-direction:column}
+
+/* ---------- 顶部操作栏（主列内） ---------- */
+.main-col .topbar{
+  position:sticky;top:0;z-index:95;height:48px;padding:0 20px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  background:rgba(255,255,255,.96);backdrop-filter:blur(6px);
+}
+.main-col .topbar .crumb{font-size:12.5px;color:var(--text2);font-weight:500}
+.main-col .topbar .crumb b{color:var(--text);font-weight:700}
+
+/* 核算台三入口工具条：跟随顶栏 */
+.main-col .calc-topbar{position:sticky;top:48px}
+
+/* ---------- 视图区微调：栅格对齐 + 留白 ---------- */
+.main-col .view{padding:16px 20px 48px}
+
+/* ---------- 原料/包材紧凑表格（方案A：单行表格） ---------- */
+.mt-table,.pt-table{
+  width:100%;border-collapse:collapse;table-layout:fixed;font-size:12.5px;
+}
+.mt-table th,.pt-table th{
+  height:38px;padding:0 8px;background:#F8FAFC;color:#6B7280;font-size:11.5px;font-weight:600;
+  text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;
+  letter-spacing:.2px;position:sticky;top:116px;z-index:5;
+}
+.main-col .mt-table th,.main-col .pt-table th{top:104px}
+.mt-table th.num,.pt-table th.num,.mt-table td.num,.pt-table td.num{text-align:right}
+.mt-table th.ctr,.pt-table th.ctr,.mt-table td.ctr,.pt-table td.ctr{text-align:center}
+#matList tr.line,#packList tr.line{
+  display:table-row;border:none;background:transparent;box-shadow:none;border-radius:0;
+}
+#matList tr.line:hover,#packList tr.line:hover{background:#EFF6FF;box-shadow:none}
+#matList tr.line.expired,#packList tr.line.expired{background:var(--danger-l)}
+#matList tr.line td,#packList tr.line td{
+  height:50px;max-height:50px;padding:4px 8px;border-bottom:1px solid #F1F3F6;vertical-align:middle;overflow:hidden;
+}
+#matList tr.line:nth-child(even) td,#packList tr.line:nth-child(even) td{background:rgba(248,250,252,.6)}
+#matList tr.line:hover td,#packList tr.line:hover td{background:transparent}
+#matList tr.line.expired:nth-child(even) td,#packList tr.line.expired:nth-child(even) td{background:transparent}
+/* 名称列：名称 + 报价日期小字（11px 中灰） */
+#matList .mt-name,#packList .pt-name{min-width:0}
+#matList .mt-name .l-name,#packList .pt-name .l-name{
+  font-weight:600;font-size:13px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+#matList .mt-name .l-sub,#packList .pt-name .l-sub{font-size:11px;color:var(--text3);margin-top:1px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#matList .mt-name .l-name .tag,#packList .pt-name .l-name .tag{margin-left:4px;vertical-align:1px}
+/* 表格内控件：行内紧凑 28px */
+.mt-table input,.mt-table select,.pt-table input,.pt-table select{
+  height:28px;border:1px solid var(--border2);border-radius:6px;padding:2px 6px;width:100%;background:#fff;font-size:12.5px;
+  transition:border-color .15s ease,box-shadow .15s ease;
+}
+.mt-table input:focus,.mt-table select:focus,.pt-table input:focus,.pt-table select:focus{
+  outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.12);
+}
+.mt-table input[type=number],.pt-table input[type=number]{text-align:right;font-variant-numeric:tabular-nums}
+.mt-table select.l-sup{font-size:12px;padding:2px 4px}
+/* 临时价覆盖：行内 checkbox + 小输入框（不占大块） */
+#matList .l-temp{display:flex;align-items:center;gap:5px;white-space:nowrap}
+#matList .l-temp label{font-size:11px;color:var(--text3);display:inline-flex;align-items:center;gap:3px;cursor:pointer;flex:none}
+#matList .l-temp input[type=checkbox]{width:14px;height:14px;accent-color:var(--primary);flex:none}
+#matList .l-temp input[type=number]{width:74px;flex:none;padding:2px 5px}
+#matList .l-temp input[type=number][disabled]{background:#F6F7F9;color:#B0B6BF}
+/* 单价列 */
+#matList .mt-price,#packList .pt-price{font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:600;font-size:12.5px;white-space:nowrap}
+#matList .mt-price.cur,#packList .pt-price.cur{font-size:10.5px;color:var(--text3);font-weight:400}
+#matList .mt-price.expired{color:var(--danger)}
+/* 行内图标操作：16px 线性、hover 反馈 */
+#matList .mt-ops,#packList .pt-ops{display:flex;gap:2px;justify-content:flex-end;align-items:center}
+#matList .mt-ops .icon-btn,#packList .pt-ops .icon-btn{
+  width:24px;height:24px;padding:0;display:inline-flex;align-items:center;justify-content:center;
+  border-radius:5px;color:#9AA3AF;background:transparent;border:none;transition:all .15s ease;
+}
+#matList .mt-ops .icon-btn:hover,#packList .pt-ops .icon-btn:hover{background:#EFF6FF;color:var(--primary)}
+#matList .mt-ops .icon-btn.del:hover,#packList .pt-ops .icon-btn.del:hover{background:var(--danger-l);color:var(--danger)}
+#matList .mt-ops .icon-btn[disabled]{opacity:.3;cursor:not-allowed}
+/* 折叠：收起时只占一行摘要（标题行） */
+#card-mats.foldable .ch-left,#card-packs.foldable .ch-left{display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none;flex:1;min-width:0}
+#card-mats.foldable .ch-left:hover .card-title,#card-packs.foldable .ch-left:hover .card-title{color:var(--primary)}
+#card-mats.foldable.collapsed .mat-list,#card-packs.foldable.collapsed .pack-list{display:none}
+#card-mats.foldable.collapsed .fold-arrow,#card-packs.foldable.collapsed .fold-arrow{transform:rotate(-90deg)}
+#card-mats .card-head,#card-packs .card-head{margin-bottom:10px}
+#card-mats.foldable.collapsed .card-head,#card-packs.foldable.collapsed .card-head{margin-bottom:0}
+
+/* ---------- 图片识别拖放面板 ---------- */
+.ocr-drop.drag{border-color:var(--primary);background:var(--primary-l);transform:scale(1.01)}
+.ocr-drop .od-s.drag-hint{color:var(--primary);font-weight:600}
+.ocr-drop .od-ic{transition:transform .18s ease}
+.ocr-drop.drag .od-ic{transform:translateY(-3px)}
+
+/* ---------- 报价小宠「招财橘猫」（动物系，三体型，无闪耀） ---------- */
+#petRoot{
+  position:fixed;right:22px;bottom:22px;z-index:1200;pointer-events:none;
+  display:flex;flex-direction:column;align-items:center;
+}
+.pet-body{pointer-events:auto;cursor:pointer;position:relative;width:150px;height:170px;user-select:none}
+.pet-body svg{width:150px;height:170px;display:block;overflow:visible}
+/* 呼吸 */
+.pet-body .pet-svg{animation:petIdle 3.4s ease-in-out infinite;transform-origin:50% 92%}
+@keyframes petIdle{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+/* 报价成功庆祝：跳跃 */
+.pet-body.celebrate .pet-svg{animation:petJump .55s cubic-bezier(.34,1.56,.64,1)}
+@keyframes petJump{0%{transform:translateY(0)}30%{transform:translateY(-26px) rotate(-6deg)}55%{transform:translateY(0) rotate(4deg)}75%{transform:translateY(-12px)}100%{transform:translateY(0)}}
+.pet-body .pet-burst{position:absolute;inset:0;pointer-events:none;opacity:0}
+.pet-body.celebrate .pet-burst{opacity:1}
+.pet-spark{
+  position:absolute;bottom:30px;font-size:15px;animation:sparkUp .9s ease-out forwards;opacity:0;
+}
+@keyframes sparkUp{0%{opacity:0;transform:translate(0,0) scale(.5)}20%{opacity:1}100%{opacity:0;transform:translate(var(--dx,0),-56px) scale(1.15)}}
+/* 进化：放大 + 微光 */
+.pet-body.evolving .pet-svg{animation:evoGrow 1.4s ease-in-out}
+@keyframes evoGrow{0%{transform:scale(1)}40%{transform:scale(1.18)}60%{transform:scale(1.22)}100%{transform:scale(1)}}
+.pet-body.evolving .pet-glow{position:absolute;inset:-8px;border-radius:50%;background:radial-gradient(circle,rgba(251,191,36,.45),transparent 68%);animation:glowPulse 1.4s ease-in-out infinite;pointer-events:none}
+@keyframes glowPulse{0%,100%{opacity:.35}50%{opacity:.9}}
+/* 等级气泡（报价成功后） */
+/* 气泡定位已迁移至 V7 段（absolute 跟随宠物） */
+/* 点击宠物后的信息面板 */
+.pet-panel{
+  position:absolute;right:0;bottom:178px;width:260px;background:#fff;border:1px solid #E6EAF0;
+  border-radius:14px;box-shadow:0 16px 44px rgba(16,24,40,.18);padding:14px 15px;z-index:5;
+  animation:petPanelIn .2s ease;pointer-events:auto;display:none;
+}
+.pet-body.panel-open .pet-panel{display:block}
+@keyframes petPanelIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.pet-panel .pp-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.pet-panel .pp-head svg{width:48px;height:54px;display:block}
+.pet-panel .pp-lv{font-size:13px;font-weight:700;color:var(--primary-d)}
+.pet-panel .pp-x{padding:0;border:none;background:transparent;color:var(--text3);font-size:16px;cursor:pointer;line-height:1}
+.pet-panel .pp-x:hover{color:var(--danger)}
+.pet-panel .pp-row{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);padding:4px 0;border-bottom:1px dashed #EEF0F4}
+.pet-panel .pp-row:last-of-type{border-bottom:none}
+.pet-panel .pp-row b{color:var(--text);font-family:var(--mono);font-variant-numeric:tabular-nums}
+.pet-panel .pp-bar{height:6px;background:#EEF1F6;border-radius:6px;margin:9px 0 4px;overflow:hidden}
+.pet-panel .pp-bar .pp-fill{display:block;height:100%;background:var(--grad);border-radius:6px;transition:width .4s ease}
+.pet-panel .pp-next{font-size:11px;color:var(--text3);margin-bottom:10px}
+.pet-panel .pp-chain{display:flex;gap:6px;margin-bottom:10px}
+.pet-panel .pp-chain .pc-item{flex:1;min-width:0;text-align:center;background:#F8FAFC;border-radius:8px;padding:6px 2px;border:1.5px solid transparent;transition:border-color .2s}
+.pet-panel .pp-chain .pc-item.pc-cur{border-color:var(--primary)}
+.pet-panel .pp-chain .pc-svg svg{width:38px;height:42px;display:block;margin:0 auto}
+.pet-panel .pp-chain .pc-lv{font-size:10px;color:var(--text3);margin-top:2px}
+.pet-panel .pp-acts{display:flex;gap:8px;margin-top:8px}
+.pet-panel .pp-acts .btn{flex:1;justify-content:center;padding:5px 8px;font-size:12px}
+/* 最小化 */
+.pet-body.mini{width:56px;height:56px}
+.pet-body.mini svg{width:56px;height:56px}
+.pet-body.mini .pet-svg{animation:petIdle 3.4s ease-in-out infinite}
+/* 进化全屏轻提示 */
+.evo-overlay{
+  position:fixed;inset:0;z-index:2200;background:rgba(15,23,42,.5);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:18px;
+  animation:petOvIn .3s ease;backdrop-filter:blur(3px);
+}
+.evo-overlay.in{opacity:1}
+@keyframes petOvIn{from{opacity:0}to{opacity:1}}
+.evo-overlay .evo-box{
+  background:#fff;border-radius:16px;padding:22px 28px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.25);
+  animation:petOvPop .6s cubic-bezier(.34,1.56,.64,1);
+}
+.evo-overlay .evo-box svg{width:140px;height:158px;display:block;margin:0 auto}
+.evo-overlay .evo-title{font-size:20px;font-weight:700;color:var(--text)}
+.evo-overlay .evo-stage{font-size:14px;color:var(--primary);margin-top:6px}
+.evo-overlay .evo-desc{font-size:12px;color:var(--text3);margin-top:10px}
+@keyframes petOvPop{0%{transform:scale(.4);opacity:0}100%{transform:scale(1);opacity:1}}
+
+/* ---------- 客户端质感细节 ---------- */
+.card{padding:14px 16px}
+.card-head{margin-bottom:10px}
+.form-grid{gap:10px 14px}
+.field input,.field select,.field textarea,.search,.gs-input,.recognize-ta{height:34px}
+.calc-grid-2{gap:12px}
+.calc-left .card{margin-bottom:12px}
+.result-card .result-head{padding:11px 14px}
+
+/* ============================================================
+ * V7 实时联动 & 温和提示（含量黄条 / 无价红条 / 数字高亮）
+ * ============================================================ */
+.rc-ratio{
+  border:1px solid #FDE68A;background:#FFFBEB;border-radius:8px;padding:7px 10px;
+  font-size:12.5px;color:#92400E;margin:6px 0;line-height:1.5;
+}
+.rc-ratio b{color:#B45309;font-family:var(--mono)}
+.rc-warn.warn-np{border-color:#FECACA;background:#FFF5F5;color:#B91C1C}
+.rc-warn.warn-np b{font-family:var(--mono)}
+/* 无价原料行标红（仅提示，不中断核算） */
+#matList tr.line.np td{background:#FFF7F5 !important}
+#matList tr.line.np .mt-price{color:var(--danger);font-weight:600}
+#matList tr.line.np .mt-price .np-flag{
+  display:inline-block;margin-left:6px;padding:0 5px;border-radius:4px;
+  background:var(--danger-l);border:1px solid #FFCCC7;color:var(--danger);
+  font-size:10.5px;font-weight:600;font-style:normal;vertical-align:1px;white-space:nowrap;
+}
+/* 数字变化高亮：500ms 淡出（只闪变化项） */
+.flash{animation:numflash .5s ease}
+@keyframes numflash{
+  0%{color:var(--primary);background:rgba(37,99,235,.14);border-radius:4px}
+  100%{color:inherit;background:transparent}
+}
+
+/* ============================================================
+ * V7 CostDesk 品牌：侧栏 LOGO（40px / 96px 两档）
+ * ============================================================ */
+.brand-logo.brand-cd{display:inline-flex;flex:none;line-height:0}
+.brand-logo.brand-cd svg{width:40px;height:40px;display:block;overflow:visible;
+  filter:drop-shadow(0 2px 4px rgba(16,24,40,.16))}
+.brand-logo.brand-cd.lg svg{width:96px;height:96px}
+.sidebar .brand-logo.brand-cd svg{width:38px;height:38px}
+.sidebar .brand-sub{font-size:10.5px;color:var(--text3);line-height:1.3}
+.crumb b.cd{color:var(--primary)}
+.main-col .topbar .crumb b.cd{color:var(--primary)}
+@media print{.brand-logo.brand-cd svg{width:40px;height:40px}}
+
+/* ============================================================
+ * V7 报价小宠重做：宝可梦式胶囊小精灵（纯内联 SVG + CSS）
+ * 在 V5/V6 宠物样式基础上追加：眨眼 / 情绪表情 / 拖动定位 /
+ * 睡眠 Zzz / 兴奋 / 进化动画 / 档案面板 / 喂糖果
+ * ============================================================ */
+/* 气泡随宠物位置（挂载于 #petRoot 内，绝对定位跟随） */
+.pet-bubble{
+  position:absolute;left:50%;bottom:calc(100% + 12px);transform:translateX(-50%);
+  z-index:1300;pointer-events:none;white-space:nowrap;max-width:250px;
+  background:#1F2937;color:#fff;font-size:12px;line-height:1.55;padding:8px 12px;border-radius:12px;
+  box-shadow:0 6px 20px rgba(0,0,0,.22);opacity:0;translate:0 8px;transition:opacity .28s ease,translate .28s ease;
+}
+.pet-bubble.show{opacity:1;translate:0 0;transform:translateX(-50%)}
+.pet-bubble::after{content:'';position:absolute;left:50%;bottom:-6px;margin-left:-6px;width:12px;height:12px;background:#1F2937;transform:rotate(45deg);border-radius:2px}
+.pet-bubble b{color:#FCD34D;font-weight:700}
+.pet-bubble .pb-name{color:#93C5FD}
+/* 眨眼：眼睛圆点定时合眼（眼睑线显现） */
+.pet-body .pet-svg .eb{animation:petBlinkHide 3.8s ease infinite}
+.pet-body .pet-svg .eg{animation:petBlinkHide 3.8s ease infinite}
+.pet-body .pet-svg .lid{animation:petBlinkLid 3.8s ease infinite}
+@keyframes petBlinkHide{0%,90%,100%{opacity:1}94%,97%{opacity:0}}
+@keyframes petBlinkLid{0%,90%,100%{opacity:0}94%,97%{opacity:1}}
+/* 睡眠：眼睛闭合 + Zzz */
+.pet-body.sleep .eb,.pet-body.sleep .eg{animation:none;opacity:0}
+.pet-body.sleep .lid{animation:none;opacity:1}
+.pet-zzz{
+  position:absolute;top:-4px;right:-10px;font-size:13px;font-weight:800;color:#93C5FD;
+  font-family:var(--mono);letter-spacing:-1px;animation:zzzFloat 1.6s ease-in-out infinite;pointer-events:none;
+}
+@keyframes zzzFloat{0%{opacity:0;translate:2px 6px}35%{opacity:1}100%{opacity:0;translate:8px -8px}}
+/* 表情切换：开心（^ ^ 眼） */
+.pet-body .mh{opacity:0}
+.pet-body.mood-happy .mh{opacity:1}
+.pet-body.mood-happy .eb{animation:none;opacity:0}
+.pet-body.mood-happy .lid{opacity:0}
+/* 兴奋（连续报价 ≥3）：更快跳动 */
+.pet-body.mood-excited .pet-svg{animation:petExcited .42s ease-in-out infinite}
+@keyframes petExcited{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-13px) rotate(4deg)}}
+/* 招手动画（V12：抬爪招手，以肩为轴） */
+.pet-body .an-paw{transform-box:fill-box;transform-origin:85% 92%;animation:petWave 2.2s ease-in-out infinite}
+@keyframes petWave{0%,100%{transform:rotate(0)}50%{transform:rotate(-14deg)}}
+/* V12 嘴型切换：常态 ω / 开心张嘴笑（CSS 类驱动，无 JS 重建） */
+.pet-body .mo-happy{opacity:0}
+.pet-body.mood-happy .mo-idle{opacity:0}
+.pet-body.mood-happy .mo-happy{opacity:1}
+/* V12 好奇状态（自检）：头顶问号浮现 */
+.pet-body .mq{opacity:0;transition:opacity .3s ease;transform-box:fill-box;transform-origin:50% 50%}
+.pet-body.mood-curious .mq{opacity:1;animation:mqBob 1.3s ease-in-out infinite}
+@keyframes mqBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+/* V12 喂糖果：糖果掉落入嘴动画 */
+.pet-candy{
+  position:absolute;left:50%;top:24%;width:26px;height:26px;margin-left:-13px;
+  pointer-events:none;z-index:3;animation:candyDrop .95s ease-in forwards;
+}
+@keyframes candyDrop{
+  0%{opacity:0;transform:translate(34px,-30px) rotate(-40deg) scale(.6)}
+  25%{opacity:1}
+  70%{transform:translate(0,34px) rotate(6deg) scale(1)}
+  100%{transform:translate(0,40px) scale(.55);opacity:0}
+}
+/* 星星动画 */
+.pet-body .an-star{transform-box:fill-box;transform-origin:50% 20%;animation:starSpin 2s ease-in-out infinite}
+@keyframes starSpin{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(1.15) rotate(12deg)}}
+/* SVG 内 Zzz 飘动 */
+.pet-body .an-zzz text{animation:zzzUp 2s ease-in-out infinite}
+.pet-body .an-zzz text:nth-child(2){animation-delay:.6s}
+@keyframes zzzUp{0%{opacity:0;transform:translate(0,0)}40%{opacity:1}100%{opacity:0;transform:translate(6px,-10px)}}
+/* 拖动提示角标 */
+.pet-drag-hint{
+  position:absolute;left:50%;top:-20px;transform:translateX(-50%);white-space:nowrap;
+  font-size:10px;color:var(--text3);opacity:0;transition:opacity .2s ease;pointer-events:none;
+}
+.pet-body:hover .pet-drag-hint{opacity:1}
+.pet-body.mini .pet-drag-hint{display:none}
+
+/* ============================================================
+ * V8 品牌区层级：图标 + CostDesk 主标 + 一句副标（杜绝散词堆叠）
+ * 主标 17px/800 深色 · 副标 11px/400 中灰 · 上下两行垂直居中于图标
+ * ============================================================ */
+.brand-text{display:flex;flex-direction:column;justify-content:center;min-width:0;line-height:1.15;gap:3px}
+.sidebar .brand{padding:10px 8px 14px}
+.sidebar .brand-logo.brand-cd svg{width:40px;height:40px}
+.sidebar .brand-name{font-size:17px;font-weight:800;color:#16181D;letter-spacing:-.3px;line-height:1.2;white-space:nowrap}
+.sidebar .brand-sub{font-size:11px;color:#7A8699;font-weight:400;line-height:1.3;white-space:nowrap;letter-spacing:.1px}
+
+/* ============================================================
+ * V8 消除空缺感：区块标题统一层级 / 卡底说明条 / 空值占位
+ * ============================================================ */
+.card-title{font-size:14.5px;font-weight:700;letter-spacing:.1px}
+.page-head h2{font-size:20px;font-weight:800;letter-spacing:-.2px}
+.calc-grid-2 .card{display:flex;flex-direction:column}
+.calc-grid-2 .card .form-grid{flex:1;align-content:start}
+.card-note{
+  margin-top:14px;padding:9px 12px;border-radius:8px;
+  background:#F8FAFC;border:1px dashed var(--border);color:#6B7280;
+  font-size:12px;line-height:1.7;
+}
+.card-note b{color:var(--primary);font-weight:600}
+.card-note .dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--primary);margin-right:6px;vertical-align:1px}
+.result-card .card-note{background:#fff}
+
+/* ============================================================
+ * V8 实时核算结果区重排：可展开横幅 / 2×2 指标 / 饼图 /
+ * 明细 / 整单成本高亮条 / MOQ 滚动表 / 底部操作
+ * ============================================================ */
+/* 风险提示独立横幅：文字完整换行，绝不截断 */
+.bn{border-radius:8px;margin:0 0 8px;overflow:hidden}
+.bn-head{
+  display:flex;align-items:flex-start;gap:7px;width:100%;text-align:left;
+  border:none;background:transparent;padding:8px 10px;cursor:pointer;
+  font-size:12.5px;line-height:1.65;white-space:normal;word-break:break-word;
+  color:inherit;font-family:inherit;
+}
+.bn-head .bn-ic{flex:none;margin-top:2px;display:inline-flex}
+.bn-head .bn-txt{flex:1;min-width:0}
+.bn-head .bn-arrow{flex:none;align-self:center;color:inherit;opacity:.8}
+.bn-warn{background:var(--warn-l);border:1px solid #FDE68A;color:#92400E}
+.bn-warn .bn-ic{color:#D97706}
+.bn-err{background:var(--danger-l);border:1px solid #FECACA;color:#B91C1C}
+.bn-err .bn-ic{color:#DC2626}
+.bn-detail{padding:0 10px 9px 31px;font-size:12px;line-height:1.75;word-break:break-word}
+.bn-warn .bn-detail{background:rgba(255,251,235,.55);color:#78350F}
+.bn-err .bn-detail{background:rgba(254,242,242,.6);color:#991B1B}
+.bn-detail .bn-line{white-space:normal;word-break:break-word}
+
+/* 整单成本：品牌蓝高亮独立条 */
+.total-bar{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  margin:10px 0;padding:10px 14px;border-radius:10px;
+  background:linear-gradient(120deg,var(--primary),#3B82F6);color:#fff;
+  box-shadow:0 3px 10px rgba(37,99,235,.28);
+}
+.total-bar .tb-k{font-size:13px;font-weight:700}
+.total-bar .tb-sub{font-size:11px;opacity:.85;margin-top:2px}
+.total-bar .tb-v{font-size:20px;font-weight:800;font-family:var(--mono);letter-spacing:-.2px;white-space:nowrap}
+.total-bar .tb-v.flash{background:#fff;color:var(--primary);border-radius:6px}
+
+/* MOQ 阶梯：窄面板横向滚动不挤压 */
+.ladder-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:8px}
+.ladder-scroll table{min-width:430px}
+.ladder-scroll table th{position:sticky;top:0}
+.result-ops{display:flex;gap:8px;flex-wrap:wrap}
+.result-ops .btn{white-space:nowrap}
+.r-section-title .tt-sub{font-size:11px;color:var(--text3);font-weight:400;margin-left:6px}
+/* 结果面板内容宽度防线：任何子元素不强制撑破 400px 面板 */
+#resultBody{overflow-x:auto}
+#resultBody>*{min-width:0}
+
+/* ============================================================
+ * V8 报价小宠·多精灵养成（P0）：3 精灵 × 3 阶 / 独立经验 /
+ * 图鉴切换 / 自检日志 / 最终体专属特效（火·电·空）
+ * 追加段：仅新增与覆盖，不触碰既有 petIdle/petJump/petOverlay
+ * ============================================================ */
+/* ---- 气泡文案可换行（长自检结果不溢出） ---- */
+.pet-bubble{white-space:normal;word-break:break-word}
+/* ---- SVG 部件级自驱动 idle 动画（呼吸由 petIdle 提供 / 眨眼由 petBlink 提供） ---- */
+.pet-body .pet-svg .an-tail{transform-box:fill-box;transform-origin:15% 90%;animation:petTailWag 2.8s ease-in-out infinite}
+.pet-body .pet-svg .an-wing{transform-box:fill-box;transform-origin:50% 20%;animation:petWingFlap 3.6s ease-in-out infinite}
+.pet-body .pet-svg .an-ear{transform-box:fill-box;transform-origin:50% 92%;animation:petEarTwitch 4.4s ease-in-out infinite}
+.pet-body .pet-svg .an-flame{transform-box:fill-box;transform-origin:50% 92%;animation:petFlameFlicker 1.1s ease-in-out infinite}
+.pet-body .pet-svg .an-head{transform-box:fill-box;transform-origin:50% 96%;animation:petHeadTurn 7s ease-in-out infinite}
+.pet-body .pet-svg .an-yawn{transform-box:fill-box;transform-origin:50% 12%;animation:petYawn 13s ease-in-out infinite}
+@keyframes petTailWag{0%,100%{transform:rotate(0)}50%{transform:rotate(-9deg)}}
+@keyframes petWingFlap{0%,100%{transform:rotate(0) scale(1)}50%{transform:rotate(-5deg) scale(1.04,.96)}}
+@keyframes petEarTwitch{0%,93%,100%{transform:rotate(0)}96%,98%{transform:rotate(7deg)}}
+@keyframes petFlameFlicker{0%,100%{transform:scale(1) rotate(0)}32%{transform:scale(.93,1.12) rotate(-2deg)}66%{transform:scale(1.08,.92) rotate(2deg)}}
+@keyframes petHeadTurn{0%,84%,100%{transform:rotate(0)}89%,95%{transform:rotate(5.5deg)}}
+@keyframes petYawn{0%,88%,100%{transform:scale(1)}92%,96%{transform:scale(1.5,.42)}}
+/* ---- 睡眠：让部件动画停摆，只留 Zzz ---- */
+.pet-body.sleep .an-tail,.pet-body.sleep .an-wing,.pet-body.sleep .an-ear,
+.pet-body.sleep .an-flame,.pet-body.sleep .an-head,.pet-body.sleep .an-yawn{animation:none}
+/* ---- 最终体专属特效容器（仅 st3 渲染） ---- */
+.pet-amb{position:absolute;inset:-14px;pointer-events:none;z-index:0}
+.pet-amb .pa{position:absolute;display:block;opacity:0;animation-iteration-count:infinite;animation-timing-function:linear}
+/* 火系：金红余烬上浮 */
+.pet-body.sp-fire .pa{width:5px;height:5px;border-radius:50%;background:radial-gradient(circle,#FEF08A,#F97316 72%);animation-name:paFireUp}
+.pet-body.sp-fire .pa.a1{left:4%;top:26%;animation-duration:3s;animation-delay:0s}
+.pet-body.sp-fire .pa.a2{left:86%;top:40%;animation-duration:3.6s;animation-delay:.7s}
+.pet-body.sp-fire .pa.a3{left:10%;top:62%;animation-duration:2.8s;animation-delay:1.3s}
+.pet-body.sp-fire .pa.a4{left:78%;top:16%;animation-duration:3.4s;animation-delay:2s}
+.pet-body.sp-fire .pa.a5{left:44%;top:4%;animation-duration:3.2s;animation-delay:1s}
+.pet-body.sp-fire .pa.a6{left:58%;top:74%;animation-duration:2.6s;animation-delay:1.6s}
+@keyframes paFireUp{0%{opacity:0;transform:translateY(8px) scale(.55)}22%{opacity:.95}72%{opacity:.5}100%{opacity:0;transform:translateY(-34px) scale(1.05)}}
+/* 电系：菱形电火花跳闪 */
+.pet-body.sp-elec .pa{width:4px;height:4px;background:radial-gradient(circle,#FEF9C3,#FACC15 70%);transform:rotate(45deg);animation-name:paElecZip}
+.pet-body.sp-elec .pa.a1{left:3%;top:22%;animation-duration:2.4s;animation-delay:0s}
+.pet-body.sp-elec .pa.a2{left:88%;top:34%;animation-duration:2s;animation-delay:.5s}
+.pet-body.sp-elec .pa.a3{left:12%;top:58%;animation-duration:2.7s;animation-delay:1.1s}
+.pet-body.sp-elec .pa.a4{left:80%;top:12%;animation-duration:2.2s;animation-delay:1.7s}
+.pet-body.sp-elec .pa.a5{left:52%;top:0%;animation-duration:2.5s;animation-delay:.9s}
+.pet-body.sp-elec .pa.a6{left:30%;top:72%;animation-duration:2.1s;animation-delay:1.4s}
+@keyframes paElecZip{0%{opacity:0;transform:translateY(10px) scale(.4) rotate(45deg)}25%{opacity:1}100%{opacity:0;transform:translate(10px,-26px) scale(.6) rotate(45deg)}}
+/* 空系：白云絮飘移 */
+.pet-body.sp-sky .pa{width:9px;height:9px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.95),rgba(224,242,254,.35));animation-name:paSkyDrift}
+.pet-body.sp-sky .pa.a1{left:6%;top:20%;animation-duration:5s;animation-delay:0s}
+.pet-body.sp-sky .pa.a2{left:84%;top:30%;animation-duration:6s;animation-delay:.8s}
+.pet-body.sp-sky .pa.a3{left:16%;top:56%;animation-duration:5.4s;animation-delay:1.5s}
+.pet-body.sp-sky .pa.a4{left:74%;top:8%;animation-duration:6.4s;animation-delay:2.2s}
+.pet-body.sp-sky .pa.a5{left:40%;top:0%;animation-duration:5.8s;animation-delay:1s}
+.pet-body.sp-sky .pa.a6{left:60%;top:68%;animation-duration:6.2s;animation-delay:1.8s}
+@keyframes paSkyDrift{0%{opacity:0;transform:translateX(12px) scale(.7)}25%{opacity:.9}100%{opacity:0;transform:translateX(-30px) translateY(-6px) scale(1.1)}}
+/* 最终体辉光按属性染色（覆盖 V7 蓝光） */
+.pet-body.sp-fire .pet-glow{background:radial-gradient(circle,rgba(249,115,22,.42),transparent 68%)}
+.pet-body.sp-elec .pet-glow{background:radial-gradient(circle,rgba(250,204,21,.42),transparent 68%)}
+.pet-body.sp-sky .pet-glow{background:radial-gradient(circle,rgba(125,211,252,.45),transparent 68%)}
+/* ---- Lv4 闪耀体：金色旋转光环 ---- */
+.pet-shine{position:absolute;inset:-12px;border-radius:50%;border:2px dashed rgba(251,191,36,.75);animation:shineSpin 7s linear infinite;pointer-events:none}
+@keyframes shineSpin{to{transform:rotate(360deg)}}
+/* ---- 面板加宽 + 图鉴切换 ---- */
+.pet-panel{width:278px}
+.pp-switch{display:flex;gap:6px;margin:0 0 9px}
+.sp-slot{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0;
+  border:1px solid #E6EAF0;border-radius:10px;background:#FAFBFC;padding:6px 2px 5px;cursor:pointer;transition:all .18s ease}
+.sp-slot .slot-svg{display:flex;align-items:flex-end;height:40px}
+.sp-slot .slot-svg svg{width:36px;height:40px;display:block;overflow:visible;filter:drop-shadow(0 2px 3px rgba(16,24,40,.12))}
+.sp-slot.on{border-color:var(--primary);background:var(--primary-l);box-shadow:0 0 0 1px var(--primary) inset}
+.sp-slot.on .slot-svg svg{filter:drop-shadow(0 2px 4px rgba(37,99,235,.35))}
+.sp-slot .slot-name{font-size:10.5px;color:var(--text2);font-style:normal;white-space:nowrap;overflow:hidden;max-width:100%;text-overflow:ellipsis}
+.sp-slot.on .slot-name{color:var(--primary-d);font-weight:700}
+.sp-slot .slot-lv{font-size:9px;color:var(--text3);font-style:normal;font-weight:600;font-family:var(--mono)}
+.sp-slot.on .slot-lv{color:var(--primary)}
+.sp-slot.locked{opacity:.6;filter:saturate(.35)}
+.slot-lock{position:absolute;top:4px;right:4px;width:15px;height:15px;border-radius:50%;background:rgba(255,255,255,.92);
+  color:#98A2B3;display:inline-flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(16,24,40,.18)}
+/* ---- 自检日志 ---- */
+.pp-check{margin:2px 0 8px;border:1px dashed #E6EAF0;border-radius:8px;padding:6px 8px;background:#FCFDFE}
+.pc-t{font-size:10.5px;font-weight:700;color:var(--text3);letter-spacing:.3px;margin-bottom:4px}
+.pc-log{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.pc-log li{display:flex;gap:6px;align-items:baseline;font-size:11px;color:var(--text2);line-height:1.55;min-width:0}
+.pc-log li i{font-style:normal;font-family:var(--mono);color:var(--text3);flex:none}
+.pc-log li span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pc-log li.lg-ok span{color:#15803D}
+.pc-log li.lg-bad span{color:#B45309}
+.pc-log li.lg-empty{justify-content:center;color:#B9C1CC;padding:2px 0}
+/* 进化全屏提示的形态徽章随精灵显示（复用 po-badge svg 尺寸） */
+.pet-overlay .po-badge svg{width:120px;height:132px}
+
+/* ============================================================
+ * V9 追加段：小宠「大跨度进化」重做支持（不触碰既有规则，仅新增/覆盖）
+ * ============================================================ */
+/* 进化链 4 形态均分（幼体/进化体/最终体/闪耀） */
+.pp-chain .pc-item{flex:1;min-width:0}
+.pp-chain .pc-item .pc-lv{max-width:62px;overflow:hidden;text-overflow:ellipsis}
+/* 闪耀形态槽：金色标题 + 微光 */
+.pp-chain .pc-item.pc-shiny .pc-lv{color:#B45309;font-weight:800}
+.pp-chain .pc-item.pc-shiny.pc-cur svg{filter:drop-shadow(0 0 6px rgba(251,191,36,.75))}
+/* 进化动画：抖动持续至换形态（约2s 流程：抖动→进化之光×2→新形态） */
+.pet-body.evolving .pet-svg{animation:evoShakeV9 .72s ease-in-out infinite}
+@keyframes evoShakeV9{0%{transform:translateX(0) rotate(0) scale(1)}18%{transform:translateX(-8px) rotate(-9deg) scale(.97)}36%{transform:translateX(8px) rotate(9deg) scale(1.04)}54%{transform:translateX(-6px) rotate(-6deg) scale(.98)}72%{transform:translateX(6px) rotate(6deg) scale(1.02)}100%{transform:translateX(0) rotate(0) scale(1)}}
+/* 异色闪耀体：整幅 SVG 淡金光（叠加在调色板之上，与金色光环呼应） */
+.pet-body.lv4 .pet-svg{filter:drop-shadow(0 0 5px rgba(251,191,36,.4))}
+.pet-body.lv4 .pet-glow{background:radial-gradient(circle,rgba(251,191,36,.5),transparent 66%) !important}
+/* 面板内进化链预览补一颗金色星点（纯 CSS 绘制，非 emoji） */
+.pp-chain .pc-item.pc-shiny::before{content:'';width:6px;height:6px;background:radial-gradient(circle,#FDE047,#D97706 80%);border-radius:50%;margin-bottom:1px;box-shadow:0 0 4px rgba(251,191,36,.8)}
+
+/* ---------- V11：卡片头右侧组合（提示 + 板块重置按钮） ---------- */
+.card-head .head-right{display:flex;align-items:center;gap:10px;min-width:0}
+.card-head .head-right .card-hint{margin-left:auto}
+
+/* ============================================================
+ * V13 桌宠深度升级：upset 委屈态 / 一次性动作库 / 对话助手面板
+ * ============================================================ */
+/* 委屈（upset）：ω嘴/笑嘴隐藏，下撇嘴 + 汗滴显现 */
+.pet-body .pet-svg .mo-sad,.pet-body .pet-svg .an-sweat{opacity:0}
+.pet-body.mood-upset .mo-idle,.pet-body.mood-upset .mo-happy{opacity:0}
+.pet-body.mood-upset .mo-sad{opacity:1}
+.pet-body.mood-upset .an-sweat{opacity:1;animation:sweatDrop 1.6s ease-in-out infinite}
+@keyframes sweatDrop{0%{opacity:0;transform:translateY(-4px)}30%{opacity:1}100%{opacity:0;transform:translateY(9px)}}
+/* 一次性动作库：jump 跳跃 / spin 转圈摇摆 / chew 咀嚼 / nuzzle 撒欢 */
+.pet-body.act-jump .pet-svg{animation:petJump .62s cubic-bezier(.34,1.56,.64,1)}
+.pet-body.act-spin .pet-svg{animation:petSpinA .9s ease-in-out}
+@keyframes petSpinA{0%{transform:rotate(0)}30%{transform:rotate(-14deg) translateY(-8px)}60%{transform:rotate(14deg) translateY(-4px)}100%{transform:rotate(0)}}
+.pet-body.act-chew .pet-svg{animation:petChew .5s ease-in-out 3}
+@keyframes petChew{0%,100%{transform:translateY(0)}50%{transform:translateY(2.5px) rotate(1.6deg)}}
+.pet-body.act-nuzzle .pet-svg{animation:petNuzzle .9s ease-in-out}
+@keyframes petNuzzle{0%,100%{transform:rotate(0)}25%{transform:rotate(-7deg)}60%{transform:rotate(6deg)}}
+/* 对话助手（嵌在养成面板底部，不遮挡核算区） */
+.pp-chat{margin-top:10px;border-top:1px dashed var(--border);padding-top:10px}
+.pp-chat-log{
+  height:150px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;
+  background:#fafbfc;border:1px solid var(--border);border-radius:8px;padding:8px;margin-bottom:8px;
+}
+.pp-chat-log .pc-msg{max-width:92%;font-size:11.5px;line-height:1.55;border-radius:9px;padding:5px 9px;word-break:break-word}
+.pp-chat-log .pc-msg.bot{align-self:flex-start;background:#fff;border:1px solid var(--border2);color:var(--text1)}
+.pp-chat-log .pc-msg.user{align-self:flex-end;background:var(--primary-l);border:1px solid #BFDBFE;color:var(--primary)}
+.pp-chat-row{display:flex;gap:6px}
+.pp-chat-row input{flex:1;min-width:0;border:1px solid var(--border2);border-radius:7px;padding:6px 9px;font-size:12px;background:#fff}
+
+
+/* ============================================================
+ * 贴图版桌宠（204x320 立绘）—— 情绪图层切换
+ * 每帧一张 <image>，靠 opacity 显隐；眨眼沿用 .eb / .lid 的 keyframes。
+ * ============================================================ */
+.pet-body .pet-svg .sq,
+.pet-body .pet-svg .sp,
+.pet-body .pet-svg .rg,
+.pet-body .pet-svg .sl{opacity:0}
+
+.pet-body.mood-curious .pet-svg .eb{animation:none;opacity:0}
+.pet-body.mood-curious .pet-svg .sq{opacity:1}
+
+.pet-body.mood-excited .pet-svg .eb{animation:none;opacity:0}
+.pet-body.mood-excited .pet-svg .sp{opacity:1}
+
+.pet-body.mood-upset .pet-svg .eb{animation:none;opacity:0}
+.pet-body.mood-upset .pet-svg .lid{animation:none;opacity:0}
+.pet-body.mood-upset .pet-svg .rg{opacity:1}
+
+.pet-body.sleep .pet-svg .lid{animation:none;opacity:0}
+.pet-body.sleep .pet-svg .sl{opacity:1}
+
+/* 立绘本身不带透明留白，去掉旧造型的溢出裁剪依赖 */
+.pet-body .pet-svg image{pointer-events:none}
